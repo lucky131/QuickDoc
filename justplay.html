@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>五点共圆小组 - 还不知道叫什么名的系统</title>
+    <script src="lib/jquery/jquery-3.2.0.min.js"></script>
+	<style>
+		#app{
+			font-size: 30px;
+		}
+		table{
+			border: 1px solid #000000;
+			text-align: center;
+		}
+		th,td{
+			border: 1px solid #000000;
+		}
+	</style>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>
+
+<script>
+$(document).ready(function () {
+	$.get("php/selectAll.php", function (msg) {
+		var datas = JSON.parse(msg).data;
+		var num=datas.length;
+		for(var i=0;i<num;i++){
+			var temp="<table align='center'><caption>";
+			temp+=datas[i].id+"</caption><tr>";
+			for(var key in datas[i].data){
+				temp+="<th>"+key+"</th>";
+			}
+			temp+="</tr><tr>";
+			for(var key in datas[i].data){
+				temp+="<td>"+datas[i].data[key]+"</td>";
+			}
+			temp+="</tr></table>"
+			$("#app").html($("#app").html()+temp);
+		}
+	});
+})
+</script>
