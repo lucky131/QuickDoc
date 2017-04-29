@@ -1,0 +1,37 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: "Heiti SC";
+}
+
+.header{
+    width: auto;
+    height: 50px;
+    line-height: 50px;
+    background-color: #cccccc;
+    font-size: 20px;
+}
+.header > .left{
+    float: left;
+    margin-left: 20px;
+}
+.header > .right{
+    float: right;
+    margin-right: 20px;
+}
+
+.content{
+    width: auto;
+    height: 1000px;
+    background-color: #eeeeee;
+}
+.content > .block{
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
+    float: left;
+    margin: 20px;
+    text-align: center;
+    background-color: #cccccc;
+    box-shadow: 5px 5px 8px #999999;
+}
