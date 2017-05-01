@@ -2,6 +2,7 @@ body{
     margin: 0;
     padding: 0;
     font-family: "Heiti SC";
+    color: #000000;
 }
 
 .header{
@@ -11,11 +12,11 @@ body{
     background-color: #cccccc;
     font-size: 20px;
 }
-.header > .left{
+.left{
     float: left;
     margin-left: 20px;
 }
-.header > .right{
+.right{
     float: right;
     margin-right: 20px;
 }
@@ -25,13 +26,47 @@ body{
     height: 1000px;
     background-color: #eeeeee;
 }
-.content > .block{
+.block{
     width: 200px;
     height: 200px;
-    line-height: 200px;
+    /*line-height: 200px;*/
+    border-radius: 10px;
     float: left;
     margin: 20px;
     text-align: center;
     background-color: #cccccc;
     box-shadow: 5px 5px 8px #999999;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+}
+.block:hover{
+    background-color: #dddddd;
+    box-shadow: 5px 5px 8px #666666;
+}
+.block:hover .block_x{
+    color: #333333;
+}
+.block_menu{
+    width: 100%;
+    height: 25px;
+}
+.block_x{
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    font-size: 20px;
+    text-align: center;
+    float: right;
+    color: #cccccc;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+}
+.block_x:hover{
+    transform: rotate(360deg);
+}
+.block_plus{
+    line-height: 200px;
+}
+.block_plus:hover{
+    transform: rotate(360deg);
 }
