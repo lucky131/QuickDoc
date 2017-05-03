@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickDoc</title>
+    <!--css样式-->
+    <link rel="stylesheet" href="css/style.css">
+    <!--jq-->
+    <script src="lib/jquery/jquery-3.2.0.min.js"></script>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <!--angular-->
+    <script src="lib/angularjs/angular-1.6.3.min.js"></script>
+</head>
+<body>
+<div ng-controller="datasetList">
+    <div class="content">
+        <div class="block">
+            <div class="block_menu">
+                <div class="block_icon"><span class="glyphicon glyphicon-remove"></span></div>
+                <div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>
+            </div>
+            <div class="block_name">dataset1</div>
+            <div class="block_desc">this is a dataset by 5.s-O from aliyun redis database</div>
+        </div>
+
+        <div class="block block_plus" ng-click="showAdd()">+</div>
+    </div>
+
+    <div class="black" ng-click="hideAdd()"></div>
+    <div class="add">
+        <div class="add_menu">
+            <div class="add_x" ng-click="hideAdd()"><span class="glyphicon glyphicon-remove"></span></div>
+        </div>
+        <div class="add_row">
+            <div class="add_left">名称：</div>
+            <div class="add_right"><input type="text" class="form-control" ng-model="add_name"></div>
+        </div>
+        <div class="add_row">
+            <div class="add_left">描述：</div>
+            <div class="add_right"><textarea class="form-control" rows="3" ng-model="add_desc"></textarea></div>
+        </div>
+        <div class="add_row">
+            <div style="text-align: center">
+                <button class="btn btn-default" style="width: 50%; height: 40px" ng-click="add()">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+//    angular.module('datasetList', [])
+//        .controller('datasetList', function ($scope, $http) {
+////            $http.get("http://rest.mirror.emulian.com/ios/g/lst/wport.service?v=2.0").then(function (response) {
+////                $scope.test = response.data.data;
+////            });
+//            $scope.test = "nimasi";
+//            $scope.add_name = "";
+//            $scope.add_desc = "";
+//            $scope.showAdd = function () {
+//                $(".black").fadeIn(300);
+//                $(".add").fadeIn(300);
+//            };
+//            $scope.hideAdd = function () {
+//                $(".black").fadeOut(300);
+//                $(".add").fadeOut(300);
+//            };
+//            $scope.add = function () {
+//                if($scope.add_name == "")
+//                    alert("名称必须填写");
+//                else{
+//
+//                }
+//            };
+//        });
+</script>

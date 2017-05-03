@@ -12,66 +12,57 @@
     <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <!--angular-->
     <script src="lib/angularjs/angular-1.6.3.min.js"></script>
+    <script src="lib/angularjs/angular-route.min.js"></script>
 </head>
 <body>
-<div ng-app="app" ng-controller="myCtrl">
+<div ng-app="index" ng-controller="indexCtrl">
     <div class="header">
         <div class="left">5.s-O</div>
         <div class="right">right</div>
     </div>
-    <div class="content">
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-        <div class="block">
-            <div class="block_menu">
-                <div class="block_x">×</div>
-            </div>
-            <div class="block_desc">dataset</div>
-        </div>
-        <div class="block block_plus">+</div>
+    <ng-view></ng-view>
+    <div class="footer">
+        五点共圆小组<br>
+        陈跃 李宇豪 郑黎明 王杰 吕品田<br>
+        ©2017 5.s-O All Rights Reserved
     </div>
 </div>
 </body>
 </html>
 
 <script>
-    var app = new angular.module('app', []);
-    app.controller('myCtrl', function ($scope) {
-        $scope.name = 'lyh';
-    });
+    angular.module('index', ['ngRoute'])
+        .config(function ($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'datasetList.html'
+                })
+                .otherwise({
+                    redirectTo:'/'
+                });
+        })
+        .controller('indexCtrl', function ($scope, $http) {
+//            $http.get("http://rest.mirror.emulian.com/ios/g/lst/wport.service?v=2.0").then(function (response) {
+//                $scope.test = response.data.data;
+//            });
+        })
+        .controller('datasetList', function ($scope) {
+            $scope.add_name = "";
+            $scope.add_desc = "";
+            $scope.showAdd = function () {
+                $(".black").fadeIn(300);
+                $(".add").fadeIn(300);
+            };
+            $scope.hideAdd = function () {
+                $(".black").fadeOut(300);
+                $(".add").fadeOut(300);
+            };
+            $scope.add = function () {
+                if($scope.add_name == "")
+                    alert("名称必须填写");
+                else{
+
+                }
+            };
+        });
 </script>
