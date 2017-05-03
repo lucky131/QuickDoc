@@ -142,14 +142,24 @@
 <body>
 <div ng-controller="datasetList">
     <div class="content">
-        <div class="block">
+        <!--<div class="block">-->
+            <!--<div class="block_menu">-->
+                <!--<div class="block_icon"><span class="glyphicon glyphicon-remove"></span></div>-->
+                <!--<div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>-->
+            <!--</div>-->
+            <!--<a href="#/dataList/10086">-->
+                <!--<div class="block_name">dataset1</div>-->
+                <!--<div class="block_desc">this is a dataset by 5.s-O from aliyun redis database</div>-->
+            <!--</a>-->
+        <!--</div>-->
+        <div class="block" ng-repeat="d in data">
             <div class="block_menu">
                 <div class="block_icon"><span class="glyphicon glyphicon-remove"></span></div>
                 <div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>
             </div>
-            <a href="#/dataList/10086">
-                <div class="block_name">dataset1</div>
-                <div class="block_desc">this is a dataset by 5.s-O from aliyun redis database</div>
+            <a href="#/dataList/{{d.id}}">
+                <div class="block_name">{{d.name}}</div>
+                <div class="block_desc">{{d.desc}}</div>
             </a>
         </div>
 

@@ -89,7 +89,11 @@
 //                $scope.test = response.data.data;
 //            });
         })
-        .controller('datasetList', function ($scope) {
+        .controller('datasetList', function ($scope, $http) {
+            $http.get('php/getDataset.php').then(function (res) {
+                if(res.success==0)
+                    $scope.data = res.data;
+            });
             $scope.add_name = "";
             $scope.add_desc = "";
             $scope.showAdd = function () {
