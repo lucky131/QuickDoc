@@ -154,7 +154,7 @@
         <!--</div>-->
         <div class="block" ng-repeat="d in data">
             <div class="block_menu">
-                <div class="block_icon"><span class="glyphicon glyphicon-remove"></span></div>
+                <div class="block_icon" ng-click="delete(d.id)"><span class="glyphicon glyphicon-remove"></span></div>
                 <div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>
             </div>
             <a href="#/dataList/{{d.id}}">

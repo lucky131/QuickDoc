@@ -72,6 +72,27 @@
         .block:hover{
             background-color: #d5d5d5;
         }
+        .block_menu{
+            width: 100%;
+            height: 30px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .block_menu_icon{
+            width: 30px;
+            height: 30px;
+            line-height: 34px;
+            font-size: 20px;
+            text-align: center;
+            float: right;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .block_menu_icon:hover{
+            transform: rotate(360deg);
+        }
     </style>
 </head>
 <body>
@@ -79,25 +100,13 @@
     <div class="menu">
         <div class="model">
             <div ng-class="model==0 ? 'model_block_active' : 'model_block'" ng-click="setModel(0)"><span class="glyphicon glyphicon-th-list"></span></div>
-            <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click="setModel(1)"><span class="glyphicon glyphicon-th"></span></div>
+            <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click=""><span class="glyphicon glyphicon-th"></span></div>
             <div ng-class="model==2 ? 'model_block_active' : 'model_block'" ng-click="setModel(2)"><span class="glyphicon glyphicon-edit"></span></div>
         </div>
     </div>
     <div class="content" ng-if="model==0">
-        <div class="block">
-            <div class="block_menu"></div>
-            key1: value1<br>
-            key2: value2<br>
-        </div>
-        <div class="block">
-            <div class="block_menu"></div>
-            key1: value1<br>
-            key2: value2<br>
-        </div>
-        <div class="block">
-            <div class="block_menu"></div>
-            key1: value1<br>
-            key2: value2<br>
+        <div class="block" ng-repeat="d in data">
+            <span ng-repeat="(key, value) in d" ng-if="key!='id'">{{key}}: {{value}}<br></span>
         </div>
     </div>
 
@@ -106,20 +115,23 @@
     </div>
 
     <div class="content" ng-if="model==2">
-        <div class="block">
-            <div class="input-group">
+        <div class="block" ng-repeat="d in data">
+            <div class="block_menu">
+                <div class="block_menu_icon" ng-click="deleteData(d.id)"><span class="glyphicon glyphicon-remove"></span></div>
+            </div>
+            <div class="input-group" ng-repeat="(key, value) in d" ng-if="key!='id'">
                 <span class="input-group-addon">变量名</span>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" ng-model="key">
                 <span class="input-group-addon">值</span>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" ng-model="value">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button class="btn btn-default" type="button" ng-click="deleteKey(d.id, key)"><span class="glyphicon glyphicon-remove"></span></button>
                 </span>
             </div>
-            <button class="btn btn-block btn-default">+ 新数据项</button>
+            <button class="btn btn-block btn-default" ng-click="addKey(d.id)">+ 新数据项</button>
         </div>
-        <button class="btn btn-block btn-default">+ 新数据</button><br>
-        <button class="btn btn-block btn-default" style="height: 40px; margin: 20px auto 0px">保存</button>
+        <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
+        <button class="btn btn-block btn-default" style="height: 60px; margin: 20px auto 0px">保存</button>
     </div>
 </div>
 </body>

@@ -79,20 +79,17 @@
                 })
                 .when('/dataList/:datasetId', {
                     templateUrl: 'dataList.html'
+                })
+                .otherwise({
+                    redirectTo:'/'
                 });
-//                .otherwise({
-//                    redirectTo:'/'
-//                });
         })
-        .controller('indexCtrl', function ($scope, $http) {
-//            $http.get("http://rest.mirror.emulian.com/ios/g/lst/wport.service?v=2.0").then(function (response) {
-//                $scope.test = response.data.data;
-//            });
+        .controller('indexCtrl', function ($scope) {
+
         })
         .controller('datasetList', function ($scope, $http) {
             $http.get('php/getDataset.php').then(function (res) {
-                if(res.success==0)
-                    $scope.data = res.data;
+                $scope.data = res.data.data;
             });
             $scope.add_name = "";
             $scope.add_desc = "";
@@ -108,18 +105,105 @@
                 if($scope.add_name == "")
                     alert("名称必须填写");
                 else{
-                    //调用接口添加
-                    //关闭窗口
-                    //name desc初始化为""
-                    //
+                    $http.get('php/addDataset.php', {
+                        params: {
+                            'name': $scope.add_name,
+                            'desc': $scope.add_desc
+                        }
+                    }).then(function (res) {
+                        $scope.hideAdd();
+                        $scope.add_name = "";
+                        $scope.add_desc = "";
+                        location.reload();
+                    });
                 }
             };
+            $scope.delete = function (datasetId) {
+                $http.get('php/deleteDataset.php', {
+                    params: {
+                        'id': datasetId
+                    }
+                }).then(function (res) {
+                    location.reload();
+                });
+            }
         })
-        .controller('dataList', function ($scope, $routeParams) {
+        .controller('dataList', function ($scope, $routeParams, $http) {
             $scope.datasetId = $routeParams.datasetId;
+//            $http.get('php/getData.php', {
+//                params: {
+//                    'datasetId': $scope.datasetId
+//                }
+//            }).then(function (res) {
+//                $scope.data = res.data.data
+//            });
+            $scope.data = [{"id":"57564459343","key0":"value0","key1":"value1"},{"id":"49625627596","key0":"value0","key1":"value1"},{"id":"55524219566","a":"a"}];
+
             $scope.model = 0;
             $scope.setModel = function (model) {
                 $scope.model = model;
-            }
+            };
+            $scope.addKey = function (dataId) {
+                var num = $scope.data.length;
+                for(var i=0; i<num; i++){
+                    if($scope.data[i].id == dataId){
+                        delete $scope.data[i][""];
+                        $scope.data[i][""] = "";
+                        break;
+                    }
+                }
+            };
+            $scope.deleteKey = function (dataId, key) {
+                var num = $scope.data.length;
+                for(var i=0; i<num; i++){
+                    if($scope.data[i].id == dataId){
+                        delete $scope.data[i][key];
+                        break;
+                    }
+                }
+            };
+            $scope.addData = function () {
+                var temp = {};
+                temp.id = uuid(11,10);
+                $scope.data.push(temp);
+            };
+            $scope.deleteData = function (dataId) {
+                var num = $scope.data.length;
+                for(var i=0; i<num; i++){
+                    if($scope.data[i].id == dataId){
+                        $scope.data.splice(i,1);
+                        break;
+                    }
+                }
+            };
         });
+
+    function uuid(len, radix) {
+        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+        var uuid = [], i;
+        radix = radix || chars.length;
+
+        if (len) {
+            // Compact form
+            for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
+        } else {
+            // rfc4122, version 4 form
+            var r;
+
+            // rfc4122 requires these characters
+            uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+            uuid[14] = '4';
+
+            // Fill in random data.  At i==19 set the high bits of clock sequence as
+            // per rfc4122, sec. 4.1.5
+            for (i = 0; i < 36; i++) {
+                if (!uuid[i]) {
+                    r = 0 | Math.random()*16;
+                    uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+                }
+            }
+        }
+
+        return uuid.join('');
+    }
 </script>
