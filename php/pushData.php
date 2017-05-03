@@ -30,11 +30,19 @@
   $redis->lTrim('dataid'.$datasetId,1,0);
   for($i=0;$i<count($data);$i++)
   {
+    $num = 0;
+    foreach ($data[$i] as $key => $value)
+    {
+      if($key=='_empty_') {continue;}
+      $num++;
+    }
+    if($num==0) {continue;}
     $dataId = randId();
     $redis->rpush('dataid'.$datasetId,$dataId);
     $redis->hMset('data'.$dataId,array("id"=>$dataId));
     foreach ($data[$i] as $key => $value)
     {
+      if($key=='_empty_') {continue;}
       $redis->hMset('data'.$dataId,array($key=>$value));
     }
   }
