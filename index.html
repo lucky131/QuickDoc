@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>QuickDoc</title>
     <!--css样式-->
-    <link rel="stylesheet" href="css/style.css">
     <!--jq-->
     <script src="lib/jquery/jquery-3.2.0.min.js"></script>
     <!--bootstrap-->
@@ -13,12 +12,52 @@
     <!--angular-->
     <script src="lib/angularjs/angular-1.6.3.min.js"></script>
     <script src="lib/angularjs/angular-route.min.js"></script>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: "Heiti SC";
+        }
+        .header{
+            width: auto;
+            height: 50px;
+            line-height: 50px;
+            background-color: #cccccc;
+            font-size: 20px;
+        }
+        .footer{
+            width: auto;
+            color: #666666;
+            font-size: 12px;
+            line-height: 24px;
+            background-color: #cccccc;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            text-align: center;
+        }
+        .left{
+            float: left;
+            margin-left: 20px;
+        }
+        .left > a{
+            color: inherit;
+            text-decoration: none;
+        }
+        .left > a:hover{
+            color: inherit;
+            text-decoration: none;
+        }
+        .right{
+            float: right;
+            margin-right: 20px;
+        }
+    </style>
 </head>
 <body>
 <div ng-app="index" ng-controller="indexCtrl">
     <div class="header">
-        <div class="left">5.s-O</div>
-        <div class="right">right</div>
+        <div class="left"><a href="#/">5.s-O</a></div>
+        <div class="right"><span class="glyphicon glyphicon-user"></span></div>
     </div>
     <ng-view></ng-view>
     <div class="footer">
@@ -32,14 +71,18 @@
 
 <script>
     angular.module('index', ['ngRoute'])
-        .config(function ($routeProvider) {
+        .config(function ($routeProvider, $locationProvider) {
+            $locationProvider.hashPrefix('');
             $routeProvider
                 .when('/', {
                     templateUrl: 'datasetList.html'
                 })
-                .otherwise({
-                    redirectTo:'/'
+                .when('/dataList/:datasetId', {
+                    templateUrl: 'dataList.html'
                 });
+//                .otherwise({
+//                    redirectTo:'/'
+//                });
         })
         .controller('indexCtrl', function ($scope, $http) {
 //            $http.get("http://rest.mirror.emulian.com/ios/g/lst/wport.service?v=2.0").then(function (response) {
@@ -61,8 +104,18 @@
                 if($scope.add_name == "")
                     alert("名称必须填写");
                 else{
-
+                    //调用接口添加
+                    //关闭窗口
+                    //name desc初始化为""
+                    //
                 }
             };
+        })
+        .controller('dataList', function ($scope, $routeParams) {
+            $scope.datasetId = $routeParams.datasetId;
+            $scope.model = 0;
+            $scope.setModel = function (model) {
+                $scope.model = model;
+            }
         });
 </script>

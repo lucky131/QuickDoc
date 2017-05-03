@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <style>
+        .menu{
+            width: 100%;
+            height: 60px;
+            background-color: #eeeeee;
+            overflow: hidden;
+        }
+        .model{
+            width: 120px;
+            height: 40px;
+            margin: 10px auto;
+        }
+        .model_block{
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 24px;
+            float: left;
+            background-color: #eeeeee;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .model_block_active{
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 24px;
+            float: left;
+            background-color: #333333;
+            color: #eeeeee;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .model_block:hover{
+            background-color: #333333;
+            color: #eeeeee;
+        }
+        .model_block:active{
+            background-color: #eeeeee;
+            color: #333333;
+        }
+        .content{
+            background-color: #eeeeee;
+            overflow: hidden;
+            padding: 0 20px 20px;
+        }
+        .block{
+            background-color: #cccccc;
+            text-align: center;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .block:hover{
+            background-color: #d5d5d5;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="dataList">
+    <div class="menu">
+        <div class="model">
+            <div ng-class="model==0 ? 'model_block_active' : 'model_block'" ng-click="setModel(0)"><span class="glyphicon glyphicon-th-list"></span></div>
+            <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click="setModel(1)"><span class="glyphicon glyphicon-th"></span></div>
+            <div ng-class="model==2 ? 'model_block_active' : 'model_block'" ng-click="setModel(2)"><span class="glyphicon glyphicon-edit"></span></div>
+        </div>
+    </div>
+    <div class="content" ng-if="model==0">
+        <div class="block">
+            <div class="block_menu"></div>
+            key1: value1<br>
+            key2: value2<br>
+        </div>
+        <div class="block">
+            <div class="block_menu"></div>
+            key1: value1<br>
+            key2: value2<br>
+        </div>
+        <div class="block">
+            <div class="block_menu"></div>
+            key1: value1<br>
+            key2: value2<br>
+        </div>
+    </div>
+
+    <div class="content" ng-if="model==1">
+
+    </div>
+
+    <div class="content" ng-if="model==2">
+        <div class="block">
+            <div class="input-group">
+                <span class="input-group-addon">变量名</span>
+                <input type="text" class="form-control">
+                <span class="input-group-addon">值</span>
+                <input type="text" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                </span>
+            </div>
+            <button class="btn btn-block btn-default">+ 新数据项</button>
+        </div>
+        <button class="btn btn-block btn-default">+ 新数据</button><br>
+        <button class="btn btn-block btn-default" style="height: 40px; margin: 20px auto 0px">保存</button>
+    </div>
+</div>
+</body>
+</html>

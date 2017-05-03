@@ -2,16 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>QuickDoc</title>
-    <!--css样式-->
-    <link rel="stylesheet" href="css/style.css">
-    <!--jq-->
-    <script src="lib/jquery/jquery-3.2.0.min.js"></script>
     <!--bootstrap-->
     <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-    <!--angular-->
-    <script src="lib/angularjs/angular-1.6.3.min.js"></script>
+    <style>
+        .content{
+            background-color: #eeeeee;
+            padding: 10px;
+            overflow: hidden;
+        }
+        .block{
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            float: left;
+            margin: 20px;
+            text-align: center;
+            background-color: #cccccc;
+            overflow: hidden;
+            box-shadow: 5px 5px 8px #999999;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .block:hover{
+            background-color: #eeeeee;
+            box-shadow: 5px 5px 8px #666666;
+        }
+        .block:hover .block_icon{
+            color: #333333;
+        }
+        .block > a{
+            color: inherit;
+            text-decoration: none;
+        }
+        .block_menu{
+            width: 100%;
+            height: 30px;
+            background-color: #cccccc;
+        }
+        .block_icon{
+            width: 30px;
+            height: 30px;
+            line-height: 33px;
+            font-size: 20px;
+            text-align: center;
+            float: right;
+            color: #cccccc;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .block_icon:hover{
+            transform: rotate(360deg);
+        }
+        .block_name{
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            font-size: 20px;
+            text-align: center;
+            margin: 10px auto 10px;
+        }
+        .block_desc{
+            width: 70%;
+            font-size: 16px;
+            text-align: left;
+            margin: 10px auto 0;
+        }
+        .block_plus{
+            line-height: 200px;
+            font-size: 40px;
+        }
+        .block_plus:hover{
+            /*transform: rotate(360deg);*/
+        }
+        .black{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        .add{
+            width: 400px;
+            height: 300px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 8px #444444;
+            background-color: #cccccc;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            overflow: hidden;
+            display: none;
+        }
+        .add_menu{
+            width: 100%;
+            height: 40px;
+            background-color: #aaaaaa;
+        }
+        .add_x{
+            width: 40px;
+            height: 40px;
+            line-height: 44px;
+            font-size: 24px;
+            text-align: center;
+            float: right;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .add_x:hover{
+            transform: rotate(360deg);
+        }
+        .add_row{
+            margin: 20px auto 0px;
+            overflow: hidden;
+        }
+        .add_left{
+            width: 100px;
+            line-height: 36px;
+            text-align: right;
+            float: left;
+        }
+        .add_right{
+            width: 250px;
+            float: left;
+        }
+    </style>
 </head>
 <body>
 <div ng-controller="datasetList">
@@ -21,8 +147,10 @@
                 <div class="block_icon"><span class="glyphicon glyphicon-remove"></span></div>
                 <div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>
             </div>
-            <div class="block_name">dataset1</div>
-            <div class="block_desc">this is a dataset by 5.s-O from aliyun redis database</div>
+            <a href="#/dataList/10086">
+                <div class="block_name">dataset1</div>
+                <div class="block_desc">this is a dataset by 5.s-O from aliyun redis database</div>
+            </a>
         </div>
 
         <div class="block block_plus" ng-click="showAdd()">+</div>
@@ -50,30 +178,3 @@
 </div>
 </body>
 </html>
-
-<script>
-//    angular.module('datasetList', [])
-//        .controller('datasetList', function ($scope, $http) {
-////            $http.get("http://rest.mirror.emulian.com/ios/g/lst/wport.service?v=2.0").then(function (response) {
-////                $scope.test = response.data.data;
-////            });
-//            $scope.test = "nimasi";
-//            $scope.add_name = "";
-//            $scope.add_desc = "";
-//            $scope.showAdd = function () {
-//                $(".black").fadeIn(300);
-//                $(".add").fadeIn(300);
-//            };
-//            $scope.hideAdd = function () {
-//                $(".black").fadeOut(300);
-//                $(".add").fadeOut(300);
-//            };
-//            $scope.add = function () {
-//                if($scope.add_name == "")
-//                    alert("名称必须填写");
-//                else{
-//
-//                }
-//            };
-//        });
-</script>
