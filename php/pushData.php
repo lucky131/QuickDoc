@@ -17,10 +17,22 @@
   $datasetId = $obj->datasetId;
   $data = $obj->data;
 
+
+  $dataids = $redis->lrange('dataid'.$datasetId,0,-1);
+  foreach($dataids as $dataid)
+  {
+    $keys = $redis->hKeys('data'.$dataid);
+    foreach($keys as $key)
+    {
+      $redis->hDel('data'.$dataid,$key);
+    }
+  }
+  $redis->lTrim('dataid'.$datasetId,1,0);
   for($i=0;$i<count($data);$i++)
   {
     $dataId = randId();
     $redis->rpush('dataid'.$datasetId,$dataId);
+    $redis->hMset('data'.$dataId,array("id"=>$dataId));
     foreach ($data[$i] as $key => $value)
     {
       $redis->hMset('data'.$dataId,array($key=>$value));
