@@ -13,13 +13,10 @@
   $redis->connect('127.0.0.1',6379);
 
   $jsonData = $_REQUEST["jsonData"];
-
-
   $obj = json_decode($jsonData);
-  print_r($obj);
   $datasetId = $obj->datasetId;
-
   $data = $obj->data;
+
   for($i=0;$i<count($data);$i++)
   {
     $dataId = randId();
@@ -33,7 +30,5 @@
   $ans['success'] = 0;
   $ans['errorInfo'] = '';
   echo json_encode($ans,JSON_UNESCAPED_UNICODE);
-
-
 
 ?>
