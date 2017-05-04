@@ -1,0 +1,160 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: "Heiti SC";
+}
+
+.header{
+    width: auto;
+    height: 50px;
+    line-height: 50px;
+    background-color: #cccccc;
+    font-size: 20px;
+}
+.footer{
+    width: auto;
+    color: #666666;
+    font-size: 12px;
+    line-height: 24px;
+    background-color: #cccccc;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+}
+.left{
+    float: left;
+    margin-left: 20px;
+}
+.right{
+    float: right;
+    margin-right: 20px;
+}
+
+.content{
+    width: auto;
+    background-color: #eeeeee;
+    padding: 10px;
+    overflow: hidden;
+}
+.block{
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    float: left;
+    margin: 20px;
+    text-align: center;
+    background-color: #cccccc;
+    overflow: hidden;
+    box-shadow: 5px 5px 8px #999999;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+}
+.block:hover{
+    background-color: #eeeeee;
+    box-shadow: 5px 5px 8px #666666;
+}
+.block:hover .block_icon{
+    color: #333333;
+}
+.block_menu{
+    width: 100%;
+    height: 30px;
+    background-color: #cccccc;
+}
+.block_icon{
+    width: 30px;
+    height: 30px;
+    line-height: 33px;
+    font-size: 20px;
+    text-align: center;
+    float: right;
+    color: #cccccc;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+}
+.block_icon:hover{
+    transform: rotate(360deg);
+}
+.block_name{
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    text-align: center;
+    margin: 10px auto 10px;
+}
+.block_desc{
+    width: 70%;
+    font-size: 16px;
+    text-align: left;
+    margin: 10px auto 0;
+}
+.block_plus{
+    line-height: 200px;
+    font-size: 40px;
+}
+.block_plus:hover{
+    /*transform: rotate(360deg);*/
+}
+.black{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+.add{
+    width: 400px;
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 8px #444444;
+    background-color: #cccccc;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    overflow: hidden;
+    display: none;
+}
+.add_menu{
+    width: 100%;
+    height: 40px;
+    background-color: #aaaaaa;
+}
+.add_x{
+    width: 40px;
+    height: 40px;
+    line-height: 44px;
+    font-size: 24px;
+    text-align: center;
+    float: right;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+}
+.add_x:hover{
+    transform: rotate(360deg);
+}
+.add_row{
+    margin: 20px auto 0px;
+    overflow: hidden;
+}
+.add_left{
+    width: 100px;
+    line-height: 36px;
+    text-align: right;
+    float: left;
+}
+.add_right{
+    width: 250px;
+    float: left;
+}
