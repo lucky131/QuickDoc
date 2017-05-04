@@ -176,6 +176,16 @@
                     }
                 }
             };
+            $scope.pushData = function () {
+                var temp = {};
+                temp['datasetId'] = $scope.datasetId;
+                temp['data'] = $scope.data;
+                $http.post('php/pushData.php', {
+                    'jsonData': JSON.stringify(temp)
+                }).then(function (res) {
+                    $scope.test = res;
+                });
+            };
         });
 
     function uuid(len, radix) {
