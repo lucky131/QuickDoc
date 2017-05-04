@@ -14,6 +14,7 @@
 
   $jsonData = $_REQUEST["jsonData"];
   $obj = json_decode($jsonData);
+  //$obj = $_POST["jsonData"];
   $datasetId = $obj->datasetId;
   $data = $obj->data;
 
