@@ -130,14 +130,14 @@
         })
         .controller('dataList', function ($scope, $routeParams, $http) {
             $scope.datasetId = $routeParams.datasetId;
-//            $http.get('php/getData.php', {
-//                params: {
-//                    'datasetId': $scope.datasetId
-//                }
-//            }).then(function (res) {
-//                $scope.data = res.data.data
-//            });
-            $scope.data = [{"id":"57564459343","key0":"value0","key1":"value1"},{"id":"49625627596","key0":"value0","key1":"value1"},{"id":"55524219566","a":"a"}];
+            $http.get('php/getData.php', {
+                params: {
+                    'datasetId': $scope.datasetId
+                }
+            }).then(function (res) {
+                $scope.data = res.data.data
+            });
+//            $scope.data = [{"id":"57564459343","key0":"value0","key1":"value1"},{"id":"49625627596","key0":"value0","key1":"value1"},{"id":"55524219566","a":"a"}];
 
             $scope.model = 0;
             $scope.setModel = function (model) {
@@ -180,10 +180,10 @@
                 var temp = {};
                 temp['datasetId'] = $scope.datasetId;
                 temp['data'] = $scope.data;
-                $http.post('php/pushData.php', {
-                    'jsonData': JSON.stringify(temp)
-                }).then(function (res) {
-                    $scope.test = res;
+                $.post('php/pushData.php', {
+                    jsonData: JSON.stringify(temp)
+                }, function (res) {
+                    alert("保存成功");
                 });
             };
         });

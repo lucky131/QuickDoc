@@ -121,7 +121,7 @@
             </div>
             <div class="input-group" ng-repeat="(key, value) in d" ng-if="key!='id'">
                 <span class="input-group-addon">变量名</span>
-                <input type="text" class="form-control" ng-model="key" readonly>
+                <input type="text" class="form-control" ng-model="key">
                 <span class="input-group-addon">值</span>
                 <input type="text" class="form-control" ng-model="d[key]">
                 <span class="input-group-btn">
@@ -129,8 +129,6 @@
                 </span>
             </div>
             <div class="input-group">
-                <span class="input-group-addon">新增变量名</span>
-                <input type="text" class="form-control col-md-4" ng-model="">
                 <span class="input-group-btn">
                     <button class="btn btn-block btn-default" ng-click="addKey(d.id)">+ 新数据项</button>
                 </span>
@@ -138,11 +136,6 @@
         </div>
         <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
         <button class="btn btn-block btn-default" ng-click="pushData()" style="height: 60px; margin: 20px auto 0px">保存</button>
-    </div>
-
-    <div class="content">
-        {{data}}<br>
-        {{test}}
     </div>
 </div>
 </body>
