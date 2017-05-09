@@ -135,7 +135,24 @@
                     'datasetId': $scope.datasetId
                 }
             }).then(function (res) {
-                $scope.data = res.data.data
+                $scope.data = angular.copy(res.data.data);
+                $scope.opedata = [];
+                for(var i=0; i<$scope.data.length; i++){
+                    var onedata = $scope.data[i];
+                    var keyList = [];
+                    var valueList = [];
+                    for(var key in onedata){
+                        if(key != 'id'){
+                            keyList.push(key);
+                            valueList.push(onedata[key]);
+                        }
+                    }
+                    var newdata = {
+                        "keyList": keyList,
+                        "valueList": valueList
+                    };
+                    $scope.opedata.push(newdata);
+                }
             });
 //            $scope.data = [{"id":"57564459343","key0":"value0","key1":"value1"},{"id":"49625627596","key0":"value0","key1":"value1"},{"id":"55524219566","a":"a"}];
 
@@ -143,47 +160,42 @@
             $scope.setModel = function (model) {
                 $scope.model = model;
             };
-            $scope.addKey = function (dataId) {
-                var num = $scope.data.length;
-                for(var i=0; i<num; i++){
-                    if($scope.data[i].id == dataId){
-                        delete $scope.data[i][""];
-                        $scope.data[i][""] = "";
-                        break;
-                    }
-                }
+            $scope.addKey = function (index) {
+                $scope.opedata[index].keyList.push("");
+                $scope.opedata[index].valueList.push("");
             };
-            $scope.deleteKey = function (dataId, key) {
-                var num = $scope.data.length;
-                for(var i=0; i<num; i++){
-                    if($scope.data[i].id == dataId){
-                        delete $scope.data[i][key];
-                        break;
-                    }
-                }
+            $scope.deleteKey = function (index1, index2) {
+                $scope.opedata[index1].keyList.splice(index2, 1);
+                $scope.opedata[index1].valueList.splice(index2, 1);
             };
             $scope.addData = function () {
-                var temp = {};
-                temp.id = uuid(11,10);
-                $scope.data.push(temp);
+                var temp = {"keyList": [], "valueList": []};
+                $scope.opedata.push(temp);
             };
-            $scope.deleteData = function (dataId) {
-                var num = $scope.data.length;
-                for(var i=0; i<num; i++){
-                    if($scope.data[i].id == dataId){
-                        $scope.data.splice(i,1);
-                        break;
-                    }
-                }
+            $scope.deleteData = function (index) {
+                $scope.opedata.splice(index, 1);
+            };
+            $scope.range = function(n) {
+                return new Array(n);
             };
             $scope.pushData = function () {
+                var newdata = [];
+                for(var i=0; i<$scope.opedata.length; i++){
+                    var onedata = {};
+                    for(var j=0; j<$scope.opedata[i].keyList.length; j++){
+                        onedata[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
+                    }
+                    newdata.push(onedata);
+                }
+//                $scope.test = newdata;
                 var temp = {};
                 temp['datasetId'] = $scope.datasetId;
-                temp['data'] = $scope.data;
+                temp['data'] = newdata;
                 $.post('php/pushData.php', {
                     jsonData: JSON.stringify(temp)
                 }, function (res) {
                     alert("保存成功");
+                    location.reload();
                 });
             };
         });
