@@ -100,7 +100,7 @@
     <div class="menu">
         <div class="model">
             <div ng-class="model==0 ? 'model_block_active' : 'model_block'" ng-click="setModel(0)"><span class="glyphicon glyphicon-th-list"></span></div>
-            <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click=""><span class="glyphicon glyphicon-th"></span></div>
+            <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click="setModel(1)"><span class="glyphicon glyphicon-th"></span></div>
             <div ng-class="model==2 ? 'model_block_active' : 'model_block'" ng-click="setModel(2)"><span class="glyphicon glyphicon-edit"></span></div>
         </div>
     </div>
@@ -115,27 +115,36 @@
     </div>
 
     <div class="content" ng-if="model==2">
-        <div class="block" ng-repeat="d in data">
+        <div class="block" ng-repeat="n in 10">
+            ???
+        </div>
+        <div class="block" ng-repeat="d in opedata">
             <div class="block_menu">
-                <div class="block_menu_icon" ng-click="deleteData(d.id)"><span class="glyphicon glyphicon-remove"></span></div>
+                <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
             </div>
-            <div class="input-group" ng-repeat="(key, value) in d" ng-if="key!='id'">
-                <span class="input-group-addon">变量名</span>
-                <input type="text" class="form-control" ng-model="key">
+            <div class="input-group" ng-repeat="i in range(d.keyList.length) track by $index">
+                <span class="input-group-addon">变量值</span>
+                <input type="text" class="form-control" ng-model="d.keyList[$index]">
                 <span class="input-group-addon">值</span>
-                <input type="text" class="form-control" ng-model="d[key]">
+                <input type="text" class="form-control" ng-model="d.valueList[$index]">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="deleteKey(d.id, key)"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button class="btn btn-default" type="button" ng-click="deleteKey($parent.$index, $index)"><span class="glyphicon glyphicon-remove"></span></button>
                 </span>
             </div>
             <div class="input-group">
                 <span class="input-group-btn">
-                    <button class="btn btn-block btn-default" ng-click="addKey(d.id)">+ 新数据项</button>
+                    <button class="btn btn-block btn-default" ng-click="addKey($index)">+ 新数据项</button>
                 </span>
             </div>
         </div>
         <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
         <button class="btn btn-block btn-default" ng-click="pushData()" style="height: 60px; margin: 20px auto 0px">保存</button>
+    </div>
+
+    <div class="content" ng-if="false">
+        {{data}}<br><br>
+        {{opedata}}<br><br>
+        {{test}}
     </div>
 </div>
 </body>
