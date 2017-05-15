@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickDoc</title>
+    <!--css样式-->
+    <!--jq-->
+    <script src="lib/jquery/jquery-3.2.0.min.js"></script>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <!--angular-->
+    <script src="lib/angularjs/angular-1.6.3.min.js"></script>
+    <script src="lib/angularjs/angular-route.min.js"></script>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+        }
+        #divFly{
+            position: absolute;
+            z-index: -10;
+        }
+        .block{
+            width: 400px;
+            height: 300px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 8px #444444;
+            background-color: #ffffff;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div ng-app="login" ng-controller="loginCtrl">
+    <div id="divFly"><img style="width: 2400px; height: 1350px" src="static/bg_login_1.png"></div>
+    <div class="block">
+        注册登陆
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    angular.module('login', [])
+        .controller('loginCtrl', function ($scope) {
+
+        });
+
+    function DivFlying() {
+        var div = document.getElementById("divFly");
+        if (!div) {
+            return;
+        }
+        var intX = window.event.clientX;
+        var intY = window.event.clientY;
+        div.style.left = (- intX / 10 - 800) + "px";
+        div.style.top = (- intY / 10 - 350) + "px";
+    }
+    document.onmousemove = DivFlying;
+</script>
