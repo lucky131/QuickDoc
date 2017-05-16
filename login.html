@@ -23,10 +23,18 @@
             position: absolute;
             z-index: -10;
         }
+        .whiteDiv{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.131);
+        }
         .block{
             width: 400px;
             height: 300px;
-            border-radius: 10px;
+            border-radius: 5px;
             box-shadow: 5px 5px 8px #444444;
             background-color: #ffffff;
             position: fixed;
@@ -37,13 +45,80 @@
             margin: auto;
             overflow: hidden;
         }
+        .menu{
+            width: 400px;
+            height: 50px;
+            line-height: 50px;
+            overflow: hidden;
+        }
+        .menu_block{
+            width: 200px;
+            text-align: center;
+            float: left;
+            font-size: 18px;
+            background-color: #d9d9d9;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .menu_block:hover{
+            background-color: #e5e5e5;
+        }
+        .menu_block_active{
+            width: 200px;
+            text-align: center;
+            float: left;
+            font-size: 22px;
+            color: #333333;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .content{
+            padding-top: 40px;
+        }
+        .row{
+            width: 300px;
+            /*height: 50px;*/
+            /*line-height: 50px;*/
+            margin: auto;
+            text-align: center;
+        }
+        .button1{
+            width: 300px;
+            margin: 50px auto 0;
+            text-align: center;
+        }
+        .button2{
+            width: 300px;
+            margin: 30px auto 0;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 <div ng-app="login" ng-controller="loginCtrl">
-    <div id="divFly"><img style="width: 2400px; height: 1350px" src="static/bg_login_1.png"></div>
+    <div id="divFly"><img style="width: 2400px; height: 1350px" src="static/bg_login_2.jpg"></div>
+    <div class="whiteDiv"></div>
     <div class="block">
-        注册登陆
+        <div class="menu">
+            <div ng-class="state==1 ? 'menu_block_active' : 'menu_block'" ng-click="setState(1)">登 录</div>
+            <div ng-class="state==2 ? 'menu_block_active' : 'menu_block'" ng-click="setState(2)">注 册</div>
+        </div>
+        <div class="content" ng-if="state==1">
+            <div class="row"><input class="form-control" type="text" placeholder="用户名"></div>
+            <div class="row"><input class="form-control" type="password" placeholder="密码"></div>
+            <div class="button1"><button class="btn btn-primary btn-block">登录</button></div>
+        </div>
+
+        <div class="content" ng-if="state==2">
+            <div class="row"><input class="form-control" type="text" placeholder="用户名"></div>
+            <div class="row"><input class="form-control" type="password" placeholder="密码"></div>
+            <div class="row"><input class="form-control" type="password" placeholder="再次输入"></div>
+            <div class="button2"><button class="btn btn-primary btn-block">注册</button></div>
+        </div>
     </div>
 </div>
 </body>
@@ -52,7 +127,10 @@
 <script>
     angular.module('login', [])
         .controller('loginCtrl', function ($scope) {
-
+            $scope.state = 1;
+            $scope.setState = function (state) {
+                $scope.state = state;
+            }
         });
 
     function DivFlying() {
