@@ -8,7 +8,10 @@
   $num = 0;
   foreach ($dataids as $dataid)
   {
-    $data[$num] = $redis->hGetAll('data'.$dataid);
+    $data[$num]['dataId'] = $dataid;
+    $data[$num]['datasetId'] = $datasetId;
+    $data[$num]['type'] = $redis->get('datatype'.$dataid);
+    $data[$num]['data'] = $redis->hGetAll('data'.$dataid);
     $num++;
   }
 
