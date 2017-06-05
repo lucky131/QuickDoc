@@ -47,17 +47,93 @@
             color: inherit;
             text-decoration: none;
         }
+        .left > a:active{
+            color: inherit;
+            text-decoration: none;
+        }
+        .left > a:visited{
+            color: inherit;
+            text-decoration: none;
+        }
         .right{
             float: right;
-            margin-right: 20px;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 5px;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
         }
+        .right:hover{
+            background-color: #eeeeee;
+        }
+        .right:active{
+            background-color: #aaaaaa;
+        }
+        .black2{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background: rgba(0, 0, 0, 0);
+            z-index: 100;
+            display: none;
+        }
+        .info{
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 8px #999999;
+            background-color: #ffffff;
+            position: fixed;
+            top: 50px;
+            right: 0;
+            overflow: hidden;
+            z-index: 101;
+            display: none;
+        }
+        .info > .button{
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-size: 20px;
+            background-color: #dddddd;
+            cursor: default;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .info > .button:hover{
+            background-color: #eeeeee;
+        }
+        .info > .button:active{
+            background-color: #cccccc;
+        }
+        .info > .button > a{
+            color: inherit;
+            text-decoration: inherit;
+        }
+
     </style>
 </head>
 <body>
 <div ng-app="index" ng-controller="indexCtrl">
     <div class="header">
-        <div class="left"><a href="#/">5.s-O</a></div>
-        <div class="right"><span class="glyphicon glyphicon-user"></span></div>
+        <div class="left"><a href="#/">QuickDoc by 5.s-O</a></div>
+        <div class="right" ng-click="showInfo()"><span class="glyphicon glyphicon-user"></span></div>
+    </div>
+    <div class="black2" ng-click="hideInfo()"></div>
+    <div class="info">
+        <div style="height: 50px; line-height: 50px; text-align: center; font-size: 20px">
+            <span class="glyphicon glyphicon-user"></span> {{info_username}}
+        </div>
+        <div class="button" ng-click="modifyPassword()">修改密码</div>
+        <div class="button" ng-click="logout()">登出</div>
     </div>
     <ng-view></ng-view>
     <div class="footer">
@@ -80,27 +156,93 @@
                 .when('/dataList/:datasetId', {
                     templateUrl: 'dataList.html'
                 })
+                .when('/modifyPassword', {
+                    templateUrl: 'modifyPassword.html'
+                })
                 .otherwise({
                     redirectTo:'/'
                 });
         })
         .controller('indexCtrl', function ($scope, $location) {
             if(getCookie("qd_username") == null){
-                alert("未登录");
                 window.location.href="login.html";
+            }
+            $scope.info_username = getCookie("qd_username");
+            $scope.showInfo = function () {
+                $(".black2").show(300);
+                $(".info").show(300);
+            };
+            $scope.hideInfo = function () {
+                $(".black2").hide(300);
+                $(".info").hide(300);
+            };
+            $scope.logout = function () {
+                delCookie("qd_username");
+                window.location.href="login.html";
+            };
+            $scope.modifyPassword = function () {
+                $(".black2").hide(300);
+                $(".info").hide(300);
+                $location.path("/modifyPassword");
             }
         })
         .controller('datasetList', function ($scope, $http) {
-            $http.get('php/getDataset.php').then(function (res) {
+            $http.get('php/getDataset.php', {
+                params: {
+                    'username': getCookie("username")
+                }
+            }).then(function (res) {
                 $scope.data = res.data.data;
             });
+            //test
+            $scope.data = [
+                {
+                    "datasetId":"72917607646",
+                    "author":"lyh",
+                    "name":"newno1dataset",
+                    "desc":"newno1",
+                    "createTime":"2017-06-05 20:57:43",
+                    "operators":["lyh","lyh2"],
+                    "sharers":["cy","cy2"]
+                },
+                {
+                    "datasetId":"72917607647",
+                    "author":"zlm",
+                    "name":"newno1dataset2",
+                    "desc":"newno122",
+                    "createTime":"2017-06-05 20:57:43",
+                    "operators":["lyh","lyh2"],
+                    "sharers":["cy","cy2"]
+                },
+                {
+                    "datasetId":"72917607648",
+                    "author":"zlm",
+                    "name":"newno1dataset2",
+                    "desc":"newno122",
+                    "createTime":"2017-06-05 20:57:43",
+                    "operators":["lyh3","lyh2"],
+                    "sharers":["lyh","cy2"]
+                },
+                {
+                    "datasetId":"72917607649",
+                    "author":"zlm",
+                    "name":"newno1dataset2",
+                    "desc":"newno122",
+                    "createTime":"2017-06-05 20:57:43",
+                    "operators":["111aa","lyh2"],
+                    "sharers":["cy","cy2"]
+                }
+            ];//
             $scope.add_name = "";
             $scope.add_desc = "";
+            $scope.modify_datasetId = "";
+            $scope.modify_name = "";
+            $scope.modify_desc = "";
             $scope.showAdd = function () {
                 $(".black").fadeIn(300);
-                $(".add").fadeIn(300);
+                $("#add").fadeIn(300);
             };
-            $scope.hideAdd = function () {
+            $scope.hide = function () {
                 $(".black").fadeOut(300);
                 $(".add").fadeOut(300);
             };
@@ -117,6 +259,28 @@
                         $scope.hideAdd();
                         $scope.add_name = "";
                         $scope.add_desc = "";
+                        location.reload();
+                    });
+                }
+            };
+            $scope.showModify = function (datasetId, name ,desc) {
+                $scope.modify_datasetId = datasetId;
+                $scope.modify_name = name;
+                $scope.modify_desc = desc;
+                $(".black").fadeIn(300);
+                $("#modify").fadeIn(300);
+            };
+            $scope.modify = function () {
+                if($scope.modify_name == "")
+                    alert("名称必须填写");
+                else{
+                    $http.get('php/???.php', {
+                        params: {
+                            'name': $scope.add_name,
+                            'desc': $scope.add_desc
+                        }
+                    }).then(function (res) {
+                        $scope.hide();
                         location.reload();
                     });
                 }
@@ -139,27 +303,27 @@
                 }
             }).then(function (res) {
                 $scope.data = angular.copy(res.data.data);
-                //test
-                $scope.data = [
-                    {
-                        dataId: "90865738162",
-                        datasetId: "61459206376",
-                        type: "kv",
-                        data: {
-                            k1: "v1",
-                            k2: "v2"
-                        }
-                    },
-                    {
-                        dataId: "51099381321",
-                        datasetId: "61459206376",
-                        type: "kv",
-                        data: {
-                            k3: "v3",
-                            k4: "v4"
-                        }
-                    }
-                ];//
+//                //test
+//                $scope.data = [
+//                    {
+//                        dataId: "90865738162",
+//                        datasetId: "61459206376",
+//                        type: "kv",
+//                        data: {
+//                            k1: "v1",
+//                            k2: "v2"
+//                        }
+//                    },
+//                    {
+//                        dataId: "51099381321",
+//                        datasetId: "61459206376",
+//                        type: "kv",
+//                        data: {
+//                            k3: "v3",
+//                            k4: "v4"
+//                        }
+//                    }
+//                ];//
                 $scope.opedata = [];
                 for(var i=0; i<$scope.data.length; i++){
                     var onedata = $scope.data[i];
@@ -211,10 +375,12 @@
             $scope.pushData = function () {
                 $scope.pushdata = [];
                 for(var i=0; i<$scope.opedata.length; i++){
-                    var onedata = {};
-
-                    for(var j=0; j<$scope.opedata[i].keyList.length; j++){
-                        onedata[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
+                    var onedata = {"type": "", "data": {}};
+                    if($scope.opedata[i].type=='kv'){
+                        onedata.type = 'kv';
+                        for(var j=0; j<$scope.opedata[i].keyList.length; j++){
+                            onedata.data[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
+                        }
                     }
                     $scope.pushdata.push(onedata);
                 }
@@ -228,6 +394,9 @@
                     location.reload();
                 });
             };
+        })
+        .controller('modifyPassword', function ($scope, $http) {
+            $scope.test = 'lyh'
         });
 
     function uuid(len, radix) {

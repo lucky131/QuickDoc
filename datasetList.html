@@ -11,6 +11,13 @@
             padding: 10px;
             overflow: hidden;
         }
+        .con_title{
+            background-color: #dddddd;
+            height: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            padding-left: 40px;
+        }
         .block{
             width: 200px;
             height: 200px;
@@ -141,35 +148,53 @@
 </head>
 <body>
 <div ng-controller="datasetList">
+    <div class="con_title">我创建的</div>
     <div class="content">
-        <!--<div class="block">-->
-            <!--<div class="block_menu">-->
-                <!--<div class="block_icon"><span class="glyphicon glyphicon-remove"></span></div>-->
-                <!--<div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>-->
-            <!--</div>-->
-            <!--<a href="#/dataList/10086">-->
-                <!--<div class="block_name">dataset1</div>-->
-                <!--<div class="block_desc">this is a dataset by 5.s-O from aliyun redis database</div>-->
-            <!--</a>-->
-        <!--</div>-->
-        <div class="block" ng-repeat="d in data">
+        <div class="block" ng-repeat="d in data" >
             <div class="block_menu">
                 <div class="block_icon" ng-click="delete(d.datasetId)"><span class="glyphicon glyphicon-remove"></span></div>
-                <div class="block_icon"><span class="glyphicon glyphicon-pencil"></span></div>
+                <div class="block_icon" ng-click="showModify(d.datasetId,d.name,d.desc)"><span class="glyphicon glyphicon-pencil"></span></div>
             </div>
             <a href="#/dataList/{{d.datasetId}}">
                 <div class="block_name">{{d.name}}</div>
                 <div class="block_desc">{{d.desc}}</div>
             </a>
         </div>
-
         <div class="block block_plus" ng-click="showAdd()">+</div>
     </div>
 
-    <div class="black" ng-click="hideAdd()"></div>
-    <div class="add">
+    <div class="con_title">可修改</div>
+    <div class="content">
+        <div class="block" ng-repeat="d in data">
+            <div class="block_menu">
+                <!--<div class="block_icon" ng-click="delete(d.datasetId)"><span class="glyphicon glyphicon-remove"></span></div>-->
+                <div class="block_icon" ng-click="showModify(d.datasetId,d.name,d.desc)"><span class="glyphicon glyphicon-pencil"></span></div>
+            </div>
+            <a href="#/dataList/{{d.datasetId}}">
+                <div class="block_name">{{d.name}}</div>
+                <div class="block_desc">{{d.desc}}</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="con_title">可查看</div>
+    <div class="content">
+        <div class="block" ng-repeat="d in data">
+            <div class="block_menu">
+                <!--<div class="block_icon" ng-click="delete(d.datasetId)"><span class="glyphicon glyphicon-remove"></span></div>-->
+                <!--<div class="block_icon" ng-click="showModify(d.datasetId,d.name,d.desc)"><span class="glyphicon glyphicon-pencil"></span></div>-->
+            </div>
+            <a href="#/dataList/{{d.datasetId}}">
+                <div class="block_name">{{d.name}}</div>
+                <div class="block_desc">{{d.desc}}</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="black" ng-click="hide()"></div>
+    <div id="add" class="add">
         <div class="add_menu">
-            <div class="add_x" ng-click="hideAdd()"><span class="glyphicon glyphicon-remove"></span></div>
+            <div class="add_x" ng-click="hide()"><span class="glyphicon glyphicon-remove"></span></div>
         </div>
         <div class="add_row">
             <div class="add_left">名称：</div>
@@ -182,6 +207,25 @@
         <div class="add_row">
             <div style="text-align: center">
                 <button class="btn btn-default" style="width: 50%; height: 40px" ng-click="add()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modify" class="add">
+        <div class="add_menu">
+            <div class="add_x" ng-click="hide()"><span class="glyphicon glyphicon-remove"></span></div>
+        </div>
+        <div class="add_row">
+            <div class="add_left">名称：</div>
+            <div class="add_right"><input type="text" class="form-control" ng-model="add_name"></div>
+        </div>
+        <div class="add_row">
+            <div class="add_left">描述：</div>
+            <div class="add_right"><textarea class="form-control" rows="3" ng-model="add_desc"></textarea></div>
+        </div>
+        <div class="add_row">
+            <div style="text-align: center">
+                <button class="btn btn-default" style="width: 50%; height: 40px" ng-click="modify()">创建</button>
             </div>
         </div>
     </div>

@@ -158,8 +158,15 @@
                     if(res.data.data == 'true'){
                         alert("用户名已存在");
                     } else {
-                        alert("注册成功");
-                        location.reload();
+                        $http.get('php/register.php', {
+                            params: {
+                                'username': $scope.rusername,
+                                'password': $scope.rpassword1
+                            }
+                        }).then(function (res) {
+                            alert("注册成功");
+                            location.reload();
+                        })
                     }
                 })
             };
