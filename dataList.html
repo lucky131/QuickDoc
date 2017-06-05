@@ -106,7 +106,7 @@
     </div>
     <div class="content" ng-if="model==0">
         <div class="block" ng-repeat="d in data">
-            <span ng-repeat="(key, value) in d" ng-if="key!='id'">{{key}}: {{value}}<br></span>
+            <span ng-repeat="(key, value) in d.data" ng-if="d.type=='kv'">{{key}}: {{value}}<br></span>
         </div>
     </div>
 
@@ -115,10 +115,8 @@
     </div>
 
     <div class="content" ng-if="model==2">
-        <div class="block" ng-repeat="n in 10">
-            ???
-        </div>
-        <div class="block" ng-repeat="d in opedata">
+
+        <div class="block" ng-repeat="d in opedata" ng-if="d.type=='kv'">
             <div class="block_menu">
                 <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
             </div>
@@ -137,14 +135,24 @@
                 </span>
             </div>
         </div>
-        <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
+
+        <div class="input-group">
+            <span class="input-group-addon">变量值</span>
+            <select id="newDataType" class="form-control">
+                <option value="kv" selected>键值对</option>
+                <option value="img">图片</option>
+            </select>
+            <span class="input-group-btn">
+                <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
+            </span>
+        </div>
         <button class="btn btn-block btn-default" ng-click="pushData()" style="height: 60px; margin: 20px auto 0px">保存</button>
     </div>
 
-    <div class="content" ng-if="false">
+    <div class="content" ng-if="true">
         {{data}}<br><br>
         {{opedata}}<br><br>
-        {{test}}
+        {{pushdata}}
     </div>
 </div>
 </body>

@@ -107,17 +107,17 @@
             <div ng-class="state==1 ? 'menu_block_active' : 'menu_block'" ng-click="setState(1)">登 录</div>
             <div ng-class="state==2 ? 'menu_block_active' : 'menu_block'" ng-click="setState(2)">注 册</div>
         </div>
-        <div class="content" ng-if="state==1">
-            <div class="row"><input class="form-control" type="text" placeholder="用户名"></div>
-            <div class="row"><input class="form-control" type="password" placeholder="密码"></div>
-            <div class="button1"><button class="btn btn-primary btn-block">登录</button></div>
+        <div class="content" ng-show="state==1">
+            <div class="row"><input class="form-control" ng-model="lusername" type="text" placeholder="用户名"></div>
+            <div class="row"><input class="form-control" ng-model="lpassword" type="password" placeholder="密码"></div>
+            <div class="button1"><button class="btn btn-primary btn-block" ng-click="login()">登录</button></div>
         </div>
 
-        <div class="content" ng-if="state==2">
-            <div class="row"><input class="form-control" type="text" placeholder="用户名"></div>
-            <div class="row"><input class="form-control" type="password" placeholder="密码"></div>
-            <div class="row"><input class="form-control" type="password" placeholder="再次输入"></div>
-            <div class="button2"><button class="btn btn-primary btn-block">注册</button></div>
+        <div class="content" ng-show="state==2">
+            <div class="row"><input class="form-control" ng-model="rusername" type="text" placeholder="用户名"></div>
+            <div class="row"><input class="form-control" ng-model="rpassword1" type="password" placeholder="密码"></div>
+            <div class="row"><input class="form-control" ng-model="rpassword2" type="password" placeholder="再次输入"></div>
+            <div class="button2"><button class="btn btn-primary btn-block" ng-click="register()">注册</button></div>
         </div>
     </div>
 </div>
@@ -126,11 +126,77 @@
 
 <script>
     angular.module('login', [])
-        .controller('loginCtrl', function ($scope) {
+        .controller('loginCtrl', function ($scope, $http) {
             $scope.state = 1;
+            $scope.lusername = '';
+            $scope.lpassword = '';
+            $scope.rusername = '';
+            $scope.rpassword1 = '';
+            $scope.rpassword2 = '';
             $scope.setState = function (state) {
                 $scope.state = state;
-            }
+            };
+            
+            $scope.register = function () {
+                if($scope.rusername == ''){
+                    alert("用户名不能为空");
+                    return;
+                }
+                if($scope.rpassword1 == '' || $scope.rpassword2 == ''){
+                    alert("密码不能为空");
+                    return;
+                }
+                if($scope.rpassword1 != $scope.rpassword2){
+                    alert("两次密码必须相同");
+                    return;
+                }
+                $http.get('php/isUsernameExist.php', {
+                    params: {
+                        'username': $scope.rusername
+                    }
+                }).then(function (res) {
+                    if(res.data.data == 'true'){
+                        alert("用户名已存在");
+                    } else {
+                        alert("注册成功");
+                        location.reload();
+                    }
+                })
+            };
+
+            $scope.login = function () {
+                if($scope.lusername == ''){
+                    alert("用户名不能为空");
+                    return;
+                }
+                if($scope.lpassword == ''){
+                    alert("密码不能为空");
+                    return;
+                }
+                $http.get('php/isUsernameExist.php', {
+                    params: {
+                        'username': $scope.lusername
+                    }
+                }).then(function (res) {
+                    if(res.data.data == 'false'){
+                        alert("用户名不存在");
+                    } else {
+                        $http.get('php/isPasswordCorrect.php', {
+                            params: {
+                                'username': $scope.lusername,
+                                'password': $scope.lpassword
+                            }
+                        }).then(function (res) {
+                            if(res.data.data == 'false'){
+                                alert("密码不正确");
+                            } else {
+                                setCookie("qd_username", $scope.lusername, 30*24*60*60*1000);
+                                window.location.href="index.html";
+                            }
+                        })
+                    }
+                })
+            };
         });
 
     function DivFlying() {
@@ -144,4 +210,26 @@
         div.style.top = (- intY / 10 - 350) + "px";
     }
     document.onmousemove = DivFlying;
+
+    function getCookie(name) {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+
+    function delCookie(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+
+    function setCookie(name,value,time) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() + time*1);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
 </script>

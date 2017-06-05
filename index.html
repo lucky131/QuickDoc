@@ -84,8 +84,11 @@
                     redirectTo:'/'
                 });
         })
-        .controller('indexCtrl', function ($scope) {
-
+        .controller('indexCtrl', function ($scope, $location) {
+            if(getCookie("qd_username") == null){
+                alert("未登录");
+                window.location.href="login.html";
+            }
         })
         .controller('datasetList', function ($scope, $http) {
             $http.get('php/getDataset.php').then(function (res) {
@@ -136,25 +139,46 @@
                 }
             }).then(function (res) {
                 $scope.data = angular.copy(res.data.data);
+                //test
+                $scope.data = [
+                    {
+                        dataId: "90865738162",
+                        datasetId: "61459206376",
+                        type: "kv",
+                        data: {
+                            k1: "v1",
+                            k2: "v2"
+                        }
+                    },
+                    {
+                        dataId: "51099381321",
+                        datasetId: "61459206376",
+                        type: "kv",
+                        data: {
+                            k3: "v3",
+                            k4: "v4"
+                        }
+                    }
+                ];//
                 $scope.opedata = [];
                 for(var i=0; i<$scope.data.length; i++){
                     var onedata = $scope.data[i];
-                    var keyList = [];
-                    var valueList = [];
-                    for(var key in onedata){
-                        if(key != 'id'){
+                    if(onedata.type=='kv'){
+                        var keyList = [];
+                        var valueList = [];
+                        for(var key in onedata.data){
                             keyList.push(key);
-                            valueList.push(onedata[key]);
+                            valueList.push(onedata.data[key]);
                         }
+                        var newdata = {
+                            "type": "kv",
+                            "keyList": keyList,
+                            "valueList": valueList
+                        };
                     }
-                    var newdata = {
-                        "keyList": keyList,
-                        "valueList": valueList
-                    };
                     $scope.opedata.push(newdata);
                 }
             });
-//            $scope.data = [{"id":"57564459343","key0":"value0","key1":"value1"},{"id":"49625627596","key0":"value0","key1":"value1"},{"id":"55524219566","a":"a"}];
 
             $scope.model = 0;
             $scope.setModel = function (model) {
@@ -169,8 +193,14 @@
                 $scope.opedata[index1].valueList.splice(index2, 1);
             };
             $scope.addData = function () {
-                var temp = {"keyList": [], "valueList": []};
-                $scope.opedata.push(temp);
+                if(document.getElementById("newDataType").value == 'kv'){
+                    var temp = {
+                        "type": "kv",
+                        "keyList": [],
+                        "valueList": []
+                    };
+                    $scope.opedata.push(temp);
+                }
             };
             $scope.deleteData = function (index) {
                 $scope.opedata.splice(index, 1);
@@ -179,18 +209,18 @@
                 return new Array(n);
             };
             $scope.pushData = function () {
-                var newdata = [];
+                $scope.pushdata = [];
                 for(var i=0; i<$scope.opedata.length; i++){
                     var onedata = {};
+
                     for(var j=0; j<$scope.opedata[i].keyList.length; j++){
                         onedata[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
                     }
-                    newdata.push(onedata);
+                    $scope.pushdata.push(onedata);
                 }
-//                $scope.test = newdata;
                 var temp = {};
                 temp['datasetId'] = $scope.datasetId;
-                temp['data'] = newdata;
+                temp['data'] = $scope.pushdata;
                 $.post('php/pushData.php', {
                     jsonData: JSON.stringify(temp)
                 }, function (res) {
@@ -227,5 +257,27 @@
         }
 
         return uuid.join('');
+    }
+
+    function getCookie(name) {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+
+    function delCookie(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+
+    function setCookie(name,value,time) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() + time*1);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
     }
 </script>
