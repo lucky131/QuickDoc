@@ -17,7 +17,7 @@
   //$obj = $_POST["jsonData"];
   $datasetId = $obj->datasetId;
   $data = $obj->data;
-  
+
 
   $dataids = $redis->lrange('dataid'.$datasetId,0,-1);
   foreach($dataids as $dataid)
@@ -54,6 +54,16 @@
         if($key=='_empty_') {continue;}
         $redis->hMset('data'.$dataId,array($key=>$value));
       }
+    }
+    if($type=="image")
+    {
+      $url = $data[$i]->data->url;
+      $redis->hMset('data'.$dataId,array("url"=>$url));
+    }
+    if($type=="text")
+    {
+      $text = $data[$i]->data->text;
+      $redis->hMset('data'.$dataId,array("text"=>$text));
     }
   }
 

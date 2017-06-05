@@ -26,6 +26,7 @@
   }
 
   $redis->lTrim('dataid'.$id,1,0);
+  $redis->lTrim('operator'.$id,1,0);
   $redis->lTrim('sharer'.$id,1,0);
   $ans['success'] = 0;
   $ans['errorInfo'] = '';

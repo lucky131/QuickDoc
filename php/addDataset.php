@@ -15,7 +15,7 @@
   $author = $_GET["author"];
   $name = $_GET["name"];
   $desc = $_GET["desc"];
-  $createTime = $_GET["createTime"];
+  $createTime = date("Y-m-d H:i:s");
   $id = randId();
   $redis->lpush("datasetid",$id);
   $redis->hMset('dataset'.$id,array('datasetId'=>$id,'author'=>$author,'name'=>$name,'desc'=>$desc,'createTime'=>$createTime));
