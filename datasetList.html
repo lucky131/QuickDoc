@@ -150,7 +150,7 @@
 <div ng-controller="datasetList">
     <div class="con_title">我创建的</div>
     <div class="content">
-        <div class="block" ng-repeat="d in data" >
+        <div class="block" ng-repeat="d in data" ng-if="info_username==d.author">
             <div class="block_menu">
                 <div class="block_icon" ng-click="delete(d.datasetId)"><span class="glyphicon glyphicon-remove"></span></div>
                 <div class="block_icon" ng-click="showModify(d.datasetId,d.name,d.desc)"><span class="glyphicon glyphicon-pencil"></span></div>
@@ -165,7 +165,7 @@
 
     <div class="con_title">可修改</div>
     <div class="content">
-        <div class="block" ng-repeat="d in data">
+        <div class="block" ng-repeat="d in data" ng-if="d.operators.includes(info_username)">
             <div class="block_menu">
                 <!--<div class="block_icon" ng-click="delete(d.datasetId)"><span class="glyphicon glyphicon-remove"></span></div>-->
                 <div class="block_icon" ng-click="showModify(d.datasetId,d.name,d.desc)"><span class="glyphicon glyphicon-pencil"></span></div>
@@ -179,7 +179,7 @@
 
     <div class="con_title">可查看</div>
     <div class="content">
-        <div class="block" ng-repeat="d in data">
+        <div class="block" ng-repeat="d in data" ng-if="d.sharers.includes(info_username)">
             <div class="block_menu">
                 <!--<div class="block_icon" ng-click="delete(d.datasetId)"><span class="glyphicon glyphicon-remove"></span></div>-->
                 <!--<div class="block_icon" ng-click="showModify(d.datasetId,d.name,d.desc)"><span class="glyphicon glyphicon-pencil"></span></div>-->
@@ -217,15 +217,15 @@
         </div>
         <div class="add_row">
             <div class="add_left">名称：</div>
-            <div class="add_right"><input type="text" class="form-control" ng-model="add_name"></div>
+            <div class="add_right"><input type="text" class="form-control" ng-model="modify_name"></div>
         </div>
         <div class="add_row">
             <div class="add_left">描述：</div>
-            <div class="add_right"><textarea class="form-control" rows="3" ng-model="add_desc"></textarea></div>
+            <div class="add_right"><textarea class="form-control" rows="3" ng-model="modify_desc"></textarea></div>
         </div>
         <div class="add_row">
             <div style="text-align: center">
-                <button class="btn btn-default" style="width: 50%; height: 40px" ng-click="modify()">创建</button>
+                <button class="btn btn-default" style="width: 50%; height: 40px" ng-click="modify()">修改</button>
             </div>
         </div>
     </div>

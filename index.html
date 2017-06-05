@@ -36,6 +36,7 @@
             text-align: center;
         }
         .left{
+            font-weight: 800;
             float: left;
             margin-left: 20px;
         }
@@ -187,57 +188,18 @@
             }
         })
         .controller('datasetList', function ($scope, $http) {
-            $http.get('php/getDataset.php', {
-                params: {
-                    'username': getCookie("username")
-                }
-            }).then(function (res) {
-                $scope.data = res.data.data;
-            });
-            //test
-            $scope.data = [
-                {
-                    "datasetId":"72917607646",
-                    "author":"lyh",
-                    "name":"newno1dataset",
-                    "desc":"newno1",
-                    "createTime":"2017-06-05 20:57:43",
-                    "operators":["lyh","lyh2"],
-                    "sharers":["cy","cy2"]
-                },
-                {
-                    "datasetId":"72917607647",
-                    "author":"zlm",
-                    "name":"newno1dataset2",
-                    "desc":"newno122",
-                    "createTime":"2017-06-05 20:57:43",
-                    "operators":["lyh","lyh2"],
-                    "sharers":["cy","cy2"]
-                },
-                {
-                    "datasetId":"72917607648",
-                    "author":"zlm",
-                    "name":"newno1dataset2",
-                    "desc":"newno122",
-                    "createTime":"2017-06-05 20:57:43",
-                    "operators":["lyh3","lyh2"],
-                    "sharers":["lyh","cy2"]
-                },
-                {
-                    "datasetId":"72917607649",
-                    "author":"zlm",
-                    "name":"newno1dataset2",
-                    "desc":"newno122",
-                    "createTime":"2017-06-05 20:57:43",
-                    "operators":["111aa","lyh2"],
-                    "sharers":["cy","cy2"]
-                }
-            ];//
             $scope.add_name = "";
             $scope.add_desc = "";
             $scope.modify_datasetId = "";
             $scope.modify_name = "";
             $scope.modify_desc = "";
+            $http.get('php/getDataset.php', {
+                params: {
+                    'username': $scope.info_username
+                }
+            }).then(function (res) {
+                $scope.data = res.data.data;
+            });
             $scope.showAdd = function () {
                 $(".black").fadeIn(300);
                 $("#add").fadeIn(300);
@@ -252,11 +214,12 @@
                 else{
                     $http.get('php/addDataset.php', {
                         params: {
+                            'author': $scope.info_username,
                             'name': $scope.add_name,
                             'desc': $scope.add_desc
                         }
                     }).then(function (res) {
-                        $scope.hideAdd();
+                        $scope.hide();
                         $scope.add_name = "";
                         $scope.add_desc = "";
                         location.reload();
@@ -274,10 +237,11 @@
                 if($scope.modify_name == "")
                     alert("名称必须填写");
                 else{
-                    $http.get('php/???.php', {
+                    $http.get('php/modifyDataset.php', {
                         params: {
-                            'name': $scope.add_name,
-                            'desc': $scope.add_desc
+                            'datasetId': $scope.modify_datasetId,
+                            'name': $scope.modify_name,
+                            'desc': $scope.modify_desc
                         }
                     }).then(function (res) {
                         $scope.hide();
@@ -297,36 +261,18 @@
         })
         .controller('dataList', function ($scope, $routeParams, $http) {
             $scope.datasetId = $routeParams.datasetId;
+            $scope.newOperator = '';
+            $scope.newSharer = '';
             $http.get('php/getData.php', {
                 params: {
                     'datasetId': $scope.datasetId
                 }
             }).then(function (res) {
                 $scope.data = angular.copy(res.data.data);
-//                //test
-//                $scope.data = [
-//                    {
-//                        dataId: "90865738162",
-//                        datasetId: "61459206376",
-//                        type: "kv",
-//                        data: {
-//                            k1: "v1",
-//                            k2: "v2"
-//                        }
-//                    },
-//                    {
-//                        dataId: "51099381321",
-//                        datasetId: "61459206376",
-//                        type: "kv",
-//                        data: {
-//                            k3: "v3",
-//                            k4: "v4"
-//                        }
-//                    }
-//                ];//
+                $scope.datasetInfo = angular.copy(res.data.datasetInfo);
                 $scope.opedata = [];
                 for(var i=0; i<$scope.data.length; i++){
-                    var onedata = $scope.data[i];
+                    var onedata = $scope.data[i], newdata = {};
                     if(onedata.type=='kv'){
                         var keyList = [];
                         var valueList = [];
@@ -334,10 +280,20 @@
                             keyList.push(key);
                             valueList.push(onedata.data[key]);
                         }
-                        var newdata = {
+                        newdata = {
                             "type": "kv",
                             "keyList": keyList,
                             "valueList": valueList
+                        };
+                    } else if(onedata.type=='image'){
+                        newdata = {
+                            "type": "image",
+                            "url": onedata.data.url
+                        };
+                    } else if(onedata.type=='text'){
+                        newdata = {
+                            "type": "text",
+                            "text": onedata.data.text
                         };
                     }
                     $scope.opedata.push(newdata);
@@ -357,14 +313,25 @@
                 $scope.opedata[index1].valueList.splice(index2, 1);
             };
             $scope.addData = function () {
+                var temp = {};
                 if(document.getElementById("newDataType").value == 'kv'){
-                    var temp = {
+                    temp = {
                         "type": "kv",
                         "keyList": [],
                         "valueList": []
                     };
-                    $scope.opedata.push(temp);
+                } else if(document.getElementById("newDataType").value == 'image'){
+                    temp = {
+                        "type": "image",
+                        "url": ""
+                    };
+                } else if(document.getElementById("newDataType").value == 'text'){
+                    temp = {
+                        "type": "text",
+                        "text": ""
+                    };
                 }
+                $scope.opedata.push(temp);
             };
             $scope.deleteData = function (index) {
                 $scope.opedata.splice(index, 1);
@@ -381,6 +348,12 @@
                         for(var j=0; j<$scope.opedata[i].keyList.length; j++){
                             onedata.data[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
                         }
+                    } else if($scope.opedata[i].type=='image'){
+                        onedata.type = 'image';
+                        onedata.data.url = $scope.opedata[i].url;
+                    } else if($scope.opedata[i].type=='text'){
+                        onedata.type = 'text';
+                        onedata.data.text = $scope.opedata[i].text;
                     }
                     $scope.pushdata.push(onedata);
                 }
@@ -394,9 +367,112 @@
                     location.reload();
                 });
             };
+            $scope.addOperator = function () {
+                if($scope.newOperator==''){
+                    alert("用户名不能为空");
+                } else if($scope.newOperator==$scope.info_username){
+                    alert("不可重复添加自己");
+                } else if($scope.datasetInfo.operators.includes($scope.newOperator)){
+                    alert("不可重复添加用户");
+                } else {
+                    $http.get('php/isUsernameExist.php', {
+                        params: {
+                            'username': $scope.newOperator
+                        }
+                    }).then(function (res) {
+                        if(res.data.data == 'false'){
+                            alert("用户名不存在");
+                        } else {
+                            $http.get('php/addOperator.php', {
+                                params: {
+                                    'datasetId': $scope.datasetId,
+                                    'operator': $scope.newOperator
+                                }
+                            }).then(function (res) {
+                                $scope.datasetInfo.operators.push($scope.newOperator);
+                                $scope.newOperator = '';
+                                alert("添加成功");
+                            })
+                        }
+                    })
+                }
+            };
+            $scope.addSharer = function () {
+                if($scope.newSharer==''){
+                    alert("用户名不能为空");
+                } else if($scope.newSharer==$scope.info_username){
+                    alert("不可重复添加自己");
+                } else if($scope.datasetInfo.sharers.includes($scope.newSharer)){
+                    alert("不可重复添加用户");
+                } else {
+                    $http.get('php/isUsernameExist.php', {
+                        params: {
+                            'username': $scope.newSharer
+                        }
+                    }).then(function (res) {
+                        if(res.data.data == 'false'){
+                            alert("用户名不存在");
+                        } else {
+                            $http.get('php/addSharer.php', {
+                                params: {
+                                    'datasetId': $scope.datasetId,
+                                    'sharer': $scope.newSharer
+                                }
+                            }).then(function (res) {
+                                if(res.data.success=='1'){
+                                    alert("此用户已是可编辑用户");
+                                } else {
+                                    $scope.datasetInfo.sharers.push($scope.newSharer);
+                                    $scope.newSharer = '';
+                                    alert("添加成功");
+                                }
+                            })
+                        }
+                    })
+                }
+            };
         })
         .controller('modifyPassword', function ($scope, $http) {
-            $scope.test = 'lyh'
+            $scope.opassword = '';
+            $scope.npassword1 = '';
+            $scope.npassword2 = '';
+            $scope.modify = function () {
+                if($scope.opassword==''){
+                    alert("旧密码不能为空");
+                    return;
+                }
+                if($scope.npassword1==''){
+                    alert("新密码不能为空");
+                    return;
+                }
+                if($scope.npassword2==''){
+                    alert("新密码不能为空");
+                    return;
+                }
+                if($scope.npassword1!=$scope.npassword2){
+                    alert("两个新密码不相同");
+                    return;
+                }
+                if($scope.npassword1==$scope.opassword){
+                    alert("新旧密码不能相同");
+                    return;
+                }
+                $http.get('php/modifyPassword.php', {
+                    params: {
+                        'username': $scope.info_username,
+                        'oldPassword': $scope.opassword,
+                        'newPassword': $scope.npassword1
+                    }
+                }).then(function (res) {
+                    if(res.data.success == '1'){
+                        alert("旧密码不正确");
+                    } else {
+                        alert("修改密码成功，请重新登录");
+                        delCookie("qd_username");
+                        window.location.href="login.html";
+                    }
+                })
+            };
         });
 
     function uuid(len, radix) {
