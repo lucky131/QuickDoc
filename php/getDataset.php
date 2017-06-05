@@ -8,6 +8,7 @@
   foreach ($ids as $id)
   {
       $datasets[$num] = $redis->hGetAll('dataset'.$id);
+      $datasets[$num]['sharers'] = $redis->lrange("sharer".$id,0,-1);
       $num++;
   }
   $ans['success'] = '0';
