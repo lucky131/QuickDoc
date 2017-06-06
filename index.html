@@ -271,6 +271,58 @@
                 $scope.data = angular.copy(res.data.data);
                 $scope.datasetInfo = angular.copy(res.data.datasetInfo);
                 $scope.opedata = [];
+//                //test
+//                $scope.data = [
+//                    {
+//                        dataId: "35055783335",
+//                        datasetId: "72917607646",
+//                        type: "text",
+//                        data: {
+//                            text: "this is a longlonglonglonglonglong string"
+//                        }
+//                    },
+//                    {
+//                        dataId: "13069732629",
+//                        datasetId: "72917607646",
+//                        type: "image",
+//                        data: {
+//                            url: "https://www.baidu.com/img/bd_logo1.png"
+//                        }
+//                    },
+//                    {
+//                        dataId: "79042942078",
+//                        datasetId: "72917607646",
+//                        type: "kv",
+//                        data: {
+//                            name: "lyh",
+//                            k2: "v2",
+//                            k1: "v1"
+//                        }
+//                    },
+//                    {
+//                        dataId: "13381625238",
+//                        datasetId: "72917607646",
+//                        type: "kv",
+//                        data: {
+//                            name: "zlm",
+//                            k3: "v3",
+//                            k4: "v4"
+//                        }
+//                    }
+//                ];
+//                $scope.datasetInfo = {
+//                    datasetId: "72917607646",
+//                    author: "zlm",
+//                    name: "zlm_new1",
+//                    desc: "newno1",
+//                    createTime: "2017-06-05 20:57:43",
+//                    operators: [
+//                        "lyh"
+//                    ],
+//                    sharers: [
+//                        "cy"
+//                    ]
+//                };//
                 for(var i=0; i<$scope.data.length; i++){
                     var onedata = $scope.data[i], newdata = {};
                     if(onedata.type=='kv'){
@@ -298,6 +350,19 @@
                     }
                     $scope.opedata.push(newdata);
                 }
+
+                //根据opedata赋值kvtable
+                var th = [];
+                for(var i=0; i<$scope.opedata.length; i++){
+                    if($scope.opedata[i].type=='kv'){
+                        for(var j=0; j<$scope.opedata[i].keyList.length; j++){
+                            if(!th.includes($scope.opedata[i].keyList[j])){
+                                th.push($scope.opedata[i].keyList[j])
+                            }
+                        }
+                    }
+                }
+                $scope.kvtablehead = th;
             });
 
             $scope.model = 0;
@@ -332,6 +397,16 @@
                     };
                 }
                 $scope.opedata.push(temp);
+            };
+            $scope.upData = function (index) {
+                var temp = $scope.opedata[index];
+                $scope.opedata.splice(index, 1);
+                $scope.opedata.splice(index-1, 0, temp);
+            };
+            $scope.downData = function (index) {
+                var temp = $scope.opedata[index];
+                $scope.opedata.splice(index, 1);
+                $scope.opedata.splice(index+1, 0, temp);
             };
             $scope.deleteData = function (index) {
                 $scope.opedata.splice(index, 1);

@@ -39,6 +39,7 @@
             text-align: center;
             font-size: 24px;
             float: left;
+            border-radius: 5px;
             background-color: #eeeeee;
             transition: 0.5s;
             -webkit-transition: 0.5s;
@@ -52,6 +53,7 @@
             text-align: center;
             font-size: 24px;
             float: left;
+            border-radius: 5px;
             background-color: #333333;
             color: #eeeeee;
             transition: 0.5s;
@@ -100,13 +102,18 @@
             font-size: 20px;
             text-align: center;
             float: right;
+            border-radius: 5px;
             transition: 0.5s;
             -webkit-transition: 0.5s;
             -moz-transition: 0.5s;
             -o-transition: 0.5s;
         }
         .block_menu_icon:hover{
-            transform: rotate(360deg);
+            /*transform: rotate(360deg);*/
+            background-color: #eeeeee;
+        }
+        .img{
+            max-width: 100%;
         }
     </style>
 </head>
@@ -117,7 +124,7 @@
     <div class="menu">
         <div class="model">
             <div ng-class="model==0 ? 'model_block_active' : 'model_block'" ng-click="setModel(0)"><span class="glyphicon glyphicon-th-list"></span></div>
-            <!--<div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click="setModel(1)"><span class="glyphicon glyphicon-th"></span></div>-->
+            <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click="setModel(1)"><span class="glyphicon glyphicon-th"></span></div>
             <div ng-if="info_username==datasetInfo.author || datasetInfo.operators.includes(info_username)" ng-class="model==2 ? 'model_block_active' : 'model_block'" ng-click="setModel(2)"><span class="glyphicon glyphicon-edit"></span></div>
             <div ng-if="info_username==datasetInfo.author" ng-class="model==3 ? 'model_block_active' : 'model_block'" ng-click="setModel(3)"><span class="glyphicon glyphicon-share"></span></div>
         </div>
@@ -128,14 +135,25 @@
                 <span ng-repeat="(key, value) in d.data" ng-if="d.type=='kv'">{{key}}: {{value}}<br></span>
             </div>
             <div ng-if="d.type=='image'">
-                <img src="{{d.data.url}}">
+                <img class="img" src="{{d.data.url}}">
             </div>
             <div ng-if="d.type=='text'">{{d.data.text}}</div>
         </div>
     </div>
 
     <div class="content" ng-show="model==1">
-
+        <div class="block">
+            <table class="table">
+                <thead>
+                <th style="text-align: center" ng-repeat="h in kvtablehead">{{h}}</th>
+                </thead>
+                <tbody>
+                <tr ng-repeat="d in data">
+                    <td ng-repeat="h in kvtablehead" ng-if="d.type=='kv'">{{d.data[h]}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="content" ng-show="model==2">
@@ -144,6 +162,8 @@
             <div ng-if="d.type=='kv'">
                 <div class="block_menu">
                     <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div ng-if="$index<opedata.length-1" class="block_menu_icon" ng-click="downData($index)"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                    <div ng-if="$index>0" class="block_menu_icon" ng-click="upData($index)"><span class="glyphicon glyphicon-arrow-up"></span></div>
                 </div>
                 <div class="input-group" ng-repeat="i in range(d.keyList.length) track by $index">
                     <span class="input-group-addon">变量值</span>
@@ -164,6 +184,8 @@
             <div ng-if="d.type=='image'">
                 <div class="block_menu">
                     <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div ng-if="$index<opedata.length-1" class="block_menu_icon" ng-click="downData($index)"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                    <div ng-if="$index>0" class="block_menu_icon" ng-click="upData($index)"><span class="glyphicon glyphicon-arrow-up"></span></div>
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon">URL</span>
@@ -174,6 +196,8 @@
             <div ng-if="d.type=='text'">
                 <div class="block_menu">
                     <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div ng-if="$index<opedata.length-1" class="block_menu_icon" ng-click="downData($index)"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                    <div ng-if="$index>0" class="block_menu_icon" ng-click="upData($index)"><span class="glyphicon glyphicon-arrow-up"></span></div>
                 </div>
                 <textarea class="form-control" rows="5" style="resize: none" ng-model="d.text"></textarea>
             </div>
@@ -221,6 +245,7 @@
     <div class="content" ng-if="false">
         {{data}}<br><br>
         {{opedata}}<br><br>
+        {{kvtable}}<br><br>
         {{pushdata}}
     </div>
 </div>
