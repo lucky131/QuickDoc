@@ -12,6 +12,8 @@
     <!--angular-->
     <script src="lib/angularjs/angular-1.6.3.min.js"></script>
     <script src="lib/angularjs/angular-route.min.js"></script>
+    <!--md5-->
+    <script src="lib/md5/md5.js"></script>
     <style>
         body{
             margin: 0;
@@ -161,7 +163,7 @@
                         $http.get('php/register.php', {
                             params: {
                                 'username': $scope.rusername,
-                                'password': $scope.rpassword1
+                                'password': md5($scope.rpassword1)
                             }
                         }).then(function (res) {
                             alert("注册成功");
@@ -191,7 +193,7 @@
                         $http.get('php/isPasswordCorrect.php', {
                             params: {
                                 'username': $scope.lusername,
-                                'password': $scope.lpassword
+                                'password': md5($scope.lpassword)
                             }
                         }).then(function (res) {
                             if(res.data.data == 'false'){

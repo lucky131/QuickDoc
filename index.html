@@ -12,6 +12,8 @@
     <!--angular-->
     <script src="lib/angularjs/angular-1.6.3.min.js"></script>
     <script src="lib/angularjs/angular-route.min.js"></script>
+    <!--md5-->
+    <script src="lib/md5/md5.js"></script>
     <style>
         body{
             margin: 0;
@@ -535,8 +537,8 @@
                 $http.get('php/modifyPassword.php', {
                     params: {
                         'username': $scope.info_username,
-                        'oldPassword': $scope.opassword,
-                        'newPassword': $scope.npassword1
+                        'oldPassword': md5($scope.opassword),
+                        'newPassword': md5($scope.npassword1)
                     }
                 }).then(function (res) {
                     if(res.data.success == '1'){
