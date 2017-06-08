@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickDoc</title>
+    <!--css样式-->
+    <!--jq-->
+    <script src="lib/jquery/jquery-3.2.0.min.js"></script>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <!--angular-->
+    <script src="lib/angularjs/angular-1.6.3.min.js"></script>
+    <script src="lib/angularjs/angular-route.min.js"></script>
+    <!--md5-->
+    <script src="lib/md5/md5.js"></script>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+        }
+        #divFly{
+            position: absolute;
+            z-index: -10;
+        }
+        .whiteDiv{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.131);
+        }
+        .block{
+            width: 400px;
+            height: 300px;
+            border-radius: 5px;
+            box-shadow: 5px 5px 8px #444444;
+            background-color: #ffffff;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            overflow: hidden;
+        }
+        .menu{
+            width: 400px;
+            height: 50px;
+            line-height: 50px;
+            overflow: hidden;
+        }
+        .menu_block{
+            width: 200px;
+            text-align: center;
+            float: left;
+            font-size: 18px;
+            background-color: #d9d9d9;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .menu_block:hover{
+            background-color: #e5e5e5;
+        }
+        .menu_block_active{
+            width: 200px;
+            text-align: center;
+            float: left;
+            font-size: 22px;
+            color: #333333;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .content{
+            padding-top: 40px;
+        }
+        .row{
+            width: 300px;
+            /*height: 50px;*/
+            /*line-height: 50px;*/
+            margin: auto;
+            text-align: center;
+        }
+        .button1{
+            width: 300px;
+            margin: 50px auto 0;
+            text-align: center;
+        }
+        .button2{
+            width: 300px;
+            margin: 30px auto 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div ng-app="login" ng-controller="loginCtrl">
+    <div id="divFly"><img style="width: 2400px; height: 1350px" src="static/bg_login_2.jpg"></div>
+    <div class="whiteDiv"></div>
+    <div class="block">
+        <div class="menu">
+            <div ng-class="state==1 ? 'menu_block_active' : 'menu_block'" ng-click="setState(1)">登 录</div>
+            <div ng-class="state==2 ? 'menu_block_active' : 'menu_block'" ng-click="setState(2)">注 册</div>
+        </div>
+        <div class="content" ng-show="state==1">
+            <div class="row"><input class="form-control" ng-model="lusername" type="text" placeholder="用户名"></div>
+            <div class="row"><input class="form-control" ng-model="lpassword" type="password" placeholder="密码"></div>
+            <div class="button1"><button class="btn btn-primary btn-block" ng-click="login()">登录</button></div>
+        </div>
+
+        <div class="content" ng-show="state==2">
+            <div class="row"><input class="form-control" ng-model="rusername" type="text" placeholder="用户名"></div>
+            <div class="row"><input class="form-control" ng-model="rpassword1" type="password" placeholder="密码"></div>
+            <div class="row"><input class="form-control" ng-model="rpassword2" type="password" placeholder="再次输入"></div>
+            <div class="button2"><button class="btn btn-primary btn-block" ng-click="register()">注册</button></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    angular.module('login', [])
+        .controller('loginCtrl', function ($scope, $http) {
+            $scope.state = 1;
+            $scope.lusername = '';
+            $scope.lpassword = '';
+            $scope.rusername = '';
+            $scope.rpassword1 = '';
+            $scope.rpassword2 = '';
+            $scope.setState = function (state) {
+                $scope.state = state;
+            };
+            
+            $scope.register = function () {
+                if($scope.rusername == ''){
+                    alert("用户名不能为空");
+                    return;
+                }
+                if($scope.rpassword1 == '' || $scope.rpassword2 == ''){
+                    alert("密码不能为空");
+                    return;
+                }
+                if($scope.rpassword1 != $scope.rpassword2){
+                    alert("两次密码必须相同");
+                    return;
+                }
+                $http.get('php/isUsernameExist.php', {
+                    params: {
+                        'username': $scope.rusername
+                    }
+                }).then(function (res) {
+                    if(res.data.data == 'true'){
+                        alert("用户名已存在");
+                    } else {
+                        $http.get('php/register.php', {
+                            params: {
+                                'username': $scope.rusername,
+                                'password': md5($scope.rpassword1)
+                            }
+                        }).then(function (res) {
+                            alert("注册成功");
+                            location.reload();
+                        })
+                    }
+                })
+            };
+
+            $scope.login = function () {
+                if($scope.lusername == ''){
+                    alert("用户名不能为空");
+                    return;
+                }
+                if($scope.lpassword == ''){
+                    alert("密码不能为空");
+                    return;
+                }
+                $http.get('php/isUsernameExist.php', {
+                    params: {
+                        'username': $scope.lusername
+                    }
+                }).then(function (res) {
+                    if(res.data.data == 'false'){
+                        alert("用户名不存在");
+                    } else {
+                        $http.get('php/isPasswordCorrect.php', {
+                            params: {
+                                'username': $scope.lusername,
+                                'password': md5($scope.lpassword)
+                            }
+                        }).then(function (res) {
+                            if(res.data.data == 'false'){
+                                alert("密码不正确");
+                            } else {
+                                setCookie("qd_username", $scope.lusername, 30*24*60*60*1000);
+                                window.location.href="index.html";
+                            }
+                        })
+                    }
+                })
+            };
+        });
+
+    function DivFlying() {
+        var div = document.getElementById("divFly");
+        if (!div) {
+            return;
+        }
+        var intX = window.event.clientX;
+        var intY = window.event.clientY;
+        div.style.left = (- intX / 10 - 800) + "px";
+        div.style.top = (- intY / 10 - 350) + "px";
+    }
+    document.onmousemove = DivFlying;
+
+    function getCookie(name) {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+
+    function delCookie(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+
+    function setCookie(name,value,time) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() + time*1);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+</script>

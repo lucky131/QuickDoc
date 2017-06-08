@@ -22,6 +22,9 @@
   $dataids = $redis->lrange('dataid'.$datasetId,0,-1);
   foreach($dataids as $dataid)
   {
+    $redis->delete("datatype".$dataId);
+    $redis->delete("databelong".$dataId);
+    $redis->delete("datatype".$dataId);
     $keys = $redis->hKeys('data'.$dataid);
     foreach($keys as $key)
     {
@@ -39,12 +42,28 @@
     }
     if($num==0) {continue;}
     $dataId = randId();
+    $type = $data[$i]->type;
     $redis->rpush('dataid'.$datasetId,$dataId);
-    $redis->hMset('data'.$dataId,array("id"=>$dataId));
-    foreach ($data[$i] as $key => $value)
+    //$redis->hMset('data'.$dataId,array("dataid"=>$dataId,"datasetid"=>$datasetId,"type"=>$type));
+    $redis->set("datatype".$dataId,$type);
+    $redis->set("databelong".$dataId,$datasetId);
+    if($type=="kv")
     {
-      if($key=='_empty_') {continue;}
-      $redis->hMset('data'.$dataId,array($key=>$value));
+      foreach ($data[$i]->data as $key => $value)
+      {
+        if($key=='_empty_') {continue;}
+        $redis->hMset('data'.$dataId,array($key=>$value));
+      }
+    }
+    if($type=="image")
+    {
+      $url = $data[$i]->data->url;
+      $redis->hMset('data'.$dataId,array("url"=>$url));
+    }
+    if($type=="text")
+    {
+      $text = $data[$i]->data->text;
+      $redis->hMset('data'.$dataId,array("text"=>$text));
     }
   }
 

@@ -6,6 +6,21 @@
     <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <style>
+        .title{
+            height: 50px;
+            line-height: 50px;
+            font-size: 30px;
+            font-weight: 500;
+            text-align: center;
+            background-color: #dddddd;
+        }
+        .title2{
+            height: 30px;
+            line-height: 30px;
+            font-size: 16px;
+            text-align: center;
+            background-color: #dddddd;
+        }
         .menu{
             width: 100%;
             height: 60px;
@@ -13,7 +28,7 @@
             overflow: hidden;
         }
         .model{
-            width: 120px;
+            display: table;
             height: 40px;
             margin: 10px auto;
         }
@@ -24,6 +39,7 @@
             text-align: center;
             font-size: 24px;
             float: left;
+            border-radius: 5px;
             background-color: #eeeeee;
             transition: 0.5s;
             -webkit-transition: 0.5s;
@@ -37,6 +53,7 @@
             text-align: center;
             font-size: 24px;
             float: left;
+            border-radius: 5px;
             background-color: #333333;
             color: #eeeeee;
             transition: 0.5s;
@@ -85,66 +102,151 @@
             font-size: 20px;
             text-align: center;
             float: right;
+            border-radius: 5px;
             transition: 0.5s;
             -webkit-transition: 0.5s;
             -moz-transition: 0.5s;
             -o-transition: 0.5s;
         }
         .block_menu_icon:hover{
-            transform: rotate(360deg);
+            /*transform: rotate(360deg);*/
+            background-color: #eeeeee;
+        }
+        .img{
+            max-width: 100%;
         }
     </style>
 </head>
 <body>
 <div ng-controller="dataList">
+    <div class="title">{{datasetInfo.name}}</div>
+    <div class="title2">{{datasetInfo.author}} - {{datasetInfo.createTime}}</div>
     <div class="menu">
         <div class="model">
             <div ng-class="model==0 ? 'model_block_active' : 'model_block'" ng-click="setModel(0)"><span class="glyphicon glyphicon-th-list"></span></div>
             <div ng-class="model==1 ? 'model_block_active' : 'model_block'" ng-click="setModel(1)"><span class="glyphicon glyphicon-th"></span></div>
-            <div ng-class="model==2 ? 'model_block_active' : 'model_block'" ng-click="setModel(2)"><span class="glyphicon glyphicon-edit"></span></div>
+            <div ng-if="info_username==datasetInfo.author || datasetInfo.operators.includes(info_username)" ng-class="model==2 ? 'model_block_active' : 'model_block'" ng-click="setModel(2)"><span class="glyphicon glyphicon-edit"></span></div>
+            <div ng-if="info_username==datasetInfo.author" ng-class="model==3 ? 'model_block_active' : 'model_block'" ng-click="setModel(3)"><span class="glyphicon glyphicon-share"></span></div>
         </div>
     </div>
-    <div class="content" ng-if="model==0">
+    <div class="content" ng-show="model==0">
         <div class="block" ng-repeat="d in data">
-            <span ng-repeat="(key, value) in d" ng-if="key!='id'">{{key}}: {{value}}<br></span>
+            <div ng-if="d.type=='kv'">
+                <span ng-repeat="(key, value) in d.data" ng-if="d.type=='kv'">{{key}}: {{value}}<br></span>
+            </div>
+            <div ng-if="d.type=='image'">
+                <img class="img" src="{{d.data.url}}">
+            </div>
+            <div ng-if="d.type=='text'">{{d.data.text}}</div>
         </div>
     </div>
 
-    <div class="content" ng-if="model==1">
-
+    <div class="content" ng-show="model==1">
+        <div class="block">
+            <table class="table">
+                <thead>
+                <th style="text-align: center" ng-repeat="h in kvtablehead">{{h}}</th>
+                </thead>
+                <tbody>
+                <tr ng-repeat="d in data">
+                    <td ng-repeat="h in kvtablehead" ng-if="d.type=='kv'">{{d.data[h]}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="content" ng-if="model==2">
-        <div class="block" ng-repeat="n in 10">
-            ???
-        </div>
+    <div class="content" ng-show="model==2">
+
         <div class="block" ng-repeat="d in opedata">
-            <div class="block_menu">
-                <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
-            </div>
-            <div class="input-group" ng-repeat="i in range(d.keyList.length) track by $index">
-                <span class="input-group-addon">变量值</span>
-                <input type="text" class="form-control" ng-model="d.keyList[$index]">
-                <span class="input-group-addon">值</span>
-                <input type="text" class="form-control" ng-model="d.valueList[$index]">
+            <div ng-if="d.type=='kv'">
+                <div class="block_menu">
+                    <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div ng-if="$index<opedata.length-1" class="block_menu_icon" ng-click="downData($index)"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                    <div ng-if="$index>0" class="block_menu_icon" ng-click="upData($index)"><span class="glyphicon glyphicon-arrow-up"></span></div>
+                </div>
+                <div class="input-group" ng-repeat="i in range(d.keyList.length) track by $index">
+                    <span class="input-group-addon">变量值</span>
+                    <input type="text" class="form-control" ng-model="d.keyList[$index]">
+                    <span class="input-group-addon">值</span>
+                    <input type="text" class="form-control" ng-model="d.valueList[$index]">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-click="deleteKey($parent.$index, $index)"><span class="glyphicon glyphicon-remove"></span></button>
+                    </span>
+                </div>
+                <div class="input-group">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="deleteKey($parent.$index, $index)"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button class="btn btn-block btn-default" ng-click="addKey($index)">+ 新键值对</button>
                 </span>
+                </div>
             </div>
+
+            <div ng-if="d.type=='image'">
+                <div class="block_menu">
+                    <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div ng-if="$index<opedata.length-1" class="block_menu_icon" ng-click="downData($index)"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                    <div ng-if="$index>0" class="block_menu_icon" ng-click="upData($index)"><span class="glyphicon glyphicon-arrow-up"></span></div>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">URL</span>
+                    <input type="text" class="form-control" ng-model="d.url">
+                </div>
+            </div>
+
+            <div ng-if="d.type=='text'">
+                <div class="block_menu">
+                    <div class="block_menu_icon" ng-click="deleteData($index)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div ng-if="$index<opedata.length-1" class="block_menu_icon" ng-click="downData($index)"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                    <div ng-if="$index>0" class="block_menu_icon" ng-click="upData($index)"><span class="glyphicon glyphicon-arrow-up"></span></div>
+                </div>
+                <textarea class="form-control" rows="5" style="resize: none" ng-model="d.text"></textarea>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon">变量值</span>
+            <select id="newDataType" class="form-control">
+                <option value="text" selected>文本</option>
+                <option value="kv">键值对</option>
+                <option value="image">在线图片</option>
+            </select>
+            <span class="input-group-btn">
+                <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
+            </span>
+        </div>
+        <button class="btn btn-block btn-default" ng-click="pushData()" style="height: 60px; margin: 20px auto 0px">保存</button>
+    </div>
+
+    <div class="content" ng-show="model==3">
+        <div class="block">
+            <span style="font-weight: 800">可编辑账号<br></span>
+            <span ng-repeat="u in datasetInfo.operators">{{u}}<br></span>
             <div class="input-group">
+                <span class="input-group-addon">用户名</span>
+                <input type="text" class="form-control" ng-model="newOperator">
                 <span class="input-group-btn">
-                    <button class="btn btn-block btn-default" ng-click="addKey($index)">+ 新数据项</button>
+                    <button class="btn btn-default" type="button" ng-click="addOperator()"><span class="glyphicon glyphicon-plus"></span></button>
                 </span>
             </div>
         </div>
-        <button class="btn btn-block btn-default" ng-click="addData()">+ 新数据</button><br>
-        <button class="btn btn-block btn-default" ng-click="pushData()" style="height: 60px; margin: 20px auto 0px">保存</button>
+        <div class="block">
+            <span style="font-weight: 800">可浏览账号<br></span>
+            <span ng-repeat="u in datasetInfo.sharers">{{u}}<br></span>
+            <div class="input-group">
+                <span class="input-group-addon">用户名</span>
+                <input type="text" class="form-control" ng-model="newSharer">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" ng-click="addSharer()"><span class="glyphicon glyphicon-plus"></span></button>
+                </span>
+            </div>
+        </div>
     </div>
 
     <div class="content" ng-if="false">
         {{data}}<br><br>
         {{opedata}}<br><br>
-        {{test}}
+        {{kvtable}}<br><br>
+        {{pushdata}}
     </div>
 </div>
 </body>

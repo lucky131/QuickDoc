@@ -12,11 +12,13 @@
     <!--angular-->
     <script src="lib/angularjs/angular-1.6.3.min.js"></script>
     <script src="lib/angularjs/angular-route.min.js"></script>
+    <!--md5-->
+    <script src="lib/md5/md5.js"></script>
     <style>
         body{
             margin: 0;
             padding: 0;
-            font-family: "Heiti SC";
+            font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
         }
         .header{
             width: auto;
@@ -36,6 +38,7 @@
             text-align: center;
         }
         .left{
+            font-weight: 800;
             float: left;
             margin-left: 20px;
         }
@@ -47,17 +50,93 @@
             color: inherit;
             text-decoration: none;
         }
+        .left > a:active{
+            color: inherit;
+            text-decoration: none;
+        }
+        .left > a:visited{
+            color: inherit;
+            text-decoration: none;
+        }
         .right{
             float: right;
-            margin-right: 20px;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 5px;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
         }
+        .right:hover{
+            background-color: #eeeeee;
+        }
+        .right:active{
+            background-color: #aaaaaa;
+        }
+        .black2{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background: rgba(0, 0, 0, 0);
+            z-index: 100;
+            display: none;
+        }
+        .info{
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 8px #999999;
+            background-color: #ffffff;
+            position: fixed;
+            top: 50px;
+            right: 0;
+            overflow: hidden;
+            z-index: 101;
+            display: none;
+        }
+        .info > .button{
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-size: 20px;
+            background-color: #dddddd;
+            cursor: default;
+            transition: 0.5s;
+            -webkit-transition: 0.5s;
+            -moz-transition: 0.5s;
+            -o-transition: 0.5s;
+        }
+        .info > .button:hover{
+            background-color: #eeeeee;
+        }
+        .info > .button:active{
+            background-color: #cccccc;
+        }
+        .info > .button > a{
+            color: inherit;
+            text-decoration: inherit;
+        }
+
     </style>
 </head>
 <body>
 <div ng-app="index" ng-controller="indexCtrl">
     <div class="header">
-        <div class="left"><a href="#/">5.s-O</a></div>
-        <div class="right"><span class="glyphicon glyphicon-user"></span></div>
+        <div class="left"><a href="#/">QuickDoc by 5.s-O</a></div>
+        <div class="right" ng-click="showInfo()"><span class="glyphicon glyphicon-user"></span></div>
+    </div>
+    <div class="black2" ng-click="hideInfo()"></div>
+    <div class="info">
+        <div style="height: 50px; line-height: 50px; text-align: center; font-size: 20px">
+            <span class="glyphicon glyphicon-user"></span> {{info_username}}
+        </div>
+        <div class="button" ng-click="modifyPassword()">修改密码</div>
+        <div class="button" ng-click="logout()">登出</div>
     </div>
     <ng-view></ng-view>
     <div class="footer">
@@ -80,24 +159,54 @@
                 .when('/dataList/:datasetId', {
                     templateUrl: 'dataList.html'
                 })
+                .when('/modifyPassword', {
+                    templateUrl: 'modifyPassword.html'
+                })
                 .otherwise({
                     redirectTo:'/'
                 });
         })
-        .controller('indexCtrl', function ($scope) {
-
+        .controller('indexCtrl', function ($scope, $location) {
+            if(getCookie("qd_username") == null){
+                window.location.href="login.html";
+            }
+            $scope.info_username = getCookie("qd_username");
+            $scope.showInfo = function () {
+                $(".black2").show(300);
+                $(".info").show(300);
+            };
+            $scope.hideInfo = function () {
+                $(".black2").hide(300);
+                $(".info").hide(300);
+            };
+            $scope.logout = function () {
+                delCookie("qd_username");
+                window.location.href="login.html";
+            };
+            $scope.modifyPassword = function () {
+                $(".black2").hide(300);
+                $(".info").hide(300);
+                $location.path("/modifyPassword");
+            }
         })
         .controller('datasetList', function ($scope, $http) {
-            $http.get('php/getDataset.php').then(function (res) {
-                $scope.data = res.data.data;
-            });
             $scope.add_name = "";
             $scope.add_desc = "";
+            $scope.modify_datasetId = "";
+            $scope.modify_name = "";
+            $scope.modify_desc = "";
+            $http.get('php/getDataset.php', {
+                params: {
+                    'username': $scope.info_username
+                }
+            }).then(function (res) {
+                $scope.data = res.data.data;
+            });
             $scope.showAdd = function () {
                 $(".black").fadeIn(300);
-                $(".add").fadeIn(300);
+                $("#add").fadeIn(300);
             };
-            $scope.hideAdd = function () {
+            $scope.hide = function () {
                 $(".black").fadeOut(300);
                 $(".add").fadeOut(300);
             };
@@ -107,13 +216,37 @@
                 else{
                     $http.get('php/addDataset.php', {
                         params: {
+                            'author': $scope.info_username,
                             'name': $scope.add_name,
                             'desc': $scope.add_desc
                         }
                     }).then(function (res) {
-                        $scope.hideAdd();
+                        $scope.hide();
                         $scope.add_name = "";
                         $scope.add_desc = "";
+                        location.reload();
+                    });
+                }
+            };
+            $scope.showModify = function (datasetId, name ,desc) {
+                $scope.modify_datasetId = datasetId;
+                $scope.modify_name = name;
+                $scope.modify_desc = desc;
+                $(".black").fadeIn(300);
+                $("#modify").fadeIn(300);
+            };
+            $scope.modify = function () {
+                if($scope.modify_name == "")
+                    alert("名称必须填写");
+                else{
+                    $http.get('php/modifyDataset.php', {
+                        params: {
+                            'datasetId': $scope.modify_datasetId,
+                            'name': $scope.modify_name,
+                            'desc': $scope.modify_desc
+                        }
+                    }).then(function (res) {
+                        $scope.hide();
                         location.reload();
                     });
                 }
@@ -130,31 +263,109 @@
         })
         .controller('dataList', function ($scope, $routeParams, $http) {
             $scope.datasetId = $routeParams.datasetId;
+            $scope.newOperator = '';
+            $scope.newSharer = '';
             $http.get('php/getData.php', {
                 params: {
                     'datasetId': $scope.datasetId
                 }
             }).then(function (res) {
                 $scope.data = angular.copy(res.data.data);
+                $scope.datasetInfo = angular.copy(res.data.datasetInfo);
                 $scope.opedata = [];
+//                //test
+//                $scope.data = [
+//                    {
+//                        dataId: "35055783335",
+//                        datasetId: "72917607646",
+//                        type: "text",
+//                        data: {
+//                            text: "this is a longlonglonglonglonglong string"
+//                        }
+//                    },
+//                    {
+//                        dataId: "13069732629",
+//                        datasetId: "72917607646",
+//                        type: "image",
+//                        data: {
+//                            url: "https://www.baidu.com/img/bd_logo1.png"
+//                        }
+//                    },
+//                    {
+//                        dataId: "79042942078",
+//                        datasetId: "72917607646",
+//                        type: "kv",
+//                        data: {
+//                            name: "lyh",
+//                            k2: "v2",
+//                            k1: "v1"
+//                        }
+//                    },
+//                    {
+//                        dataId: "13381625238",
+//                        datasetId: "72917607646",
+//                        type: "kv",
+//                        data: {
+//                            name: "zlm",
+//                            k3: "v3",
+//                            k4: "v4"
+//                        }
+//                    }
+//                ];
+//                $scope.datasetInfo = {
+//                    datasetId: "72917607646",
+//                    author: "zlm",
+//                    name: "zlm_new1",
+//                    desc: "newno1",
+//                    createTime: "2017-06-05 20:57:43",
+//                    operators: [
+//                        "lyh"
+//                    ],
+//                    sharers: [
+//                        "cy"
+//                    ]
+//                };//
                 for(var i=0; i<$scope.data.length; i++){
-                    var onedata = $scope.data[i];
-                    var keyList = [];
-                    var valueList = [];
-                    for(var key in onedata){
-                        if(key != 'id'){
+                    var onedata = $scope.data[i], newdata = {};
+                    if(onedata.type=='kv'){
+                        var keyList = [];
+                        var valueList = [];
+                        for(var key in onedata.data){
                             keyList.push(key);
-                            valueList.push(onedata[key]);
+                            valueList.push(onedata.data[key]);
                         }
+                        newdata = {
+                            "type": "kv",
+                            "keyList": keyList,
+                            "valueList": valueList
+                        };
+                    } else if(onedata.type=='image'){
+                        newdata = {
+                            "type": "image",
+                            "url": onedata.data.url
+                        };
+                    } else if(onedata.type=='text'){
+                        newdata = {
+                            "type": "text",
+                            "text": onedata.data.text
+                        };
                     }
-                    var newdata = {
-                        "keyList": keyList,
-                        "valueList": valueList
-                    };
                     $scope.opedata.push(newdata);
                 }
+
+                //根据opedata赋值kvtable
+                var th = [];
+                for(var i=0; i<$scope.opedata.length; i++){
+                    if($scope.opedata[i].type=='kv'){
+                        for(var j=0; j<$scope.opedata[i].keyList.length; j++){
+                            if(!th.includes($scope.opedata[i].keyList[j])){
+                                th.push($scope.opedata[i].keyList[j])
+                            }
+                        }
+                    }
+                }
+                $scope.kvtablehead = th;
             });
-//            $scope.data = [{"id":"57564459343","key0":"value0","key1":"value1"},{"id":"49625627596","key0":"value0","key1":"value1"},{"id":"55524219566","a":"a"}];
 
             $scope.model = 0;
             $scope.setModel = function (model) {
@@ -169,8 +380,35 @@
                 $scope.opedata[index1].valueList.splice(index2, 1);
             };
             $scope.addData = function () {
-                var temp = {"keyList": [], "valueList": []};
+                var temp = {};
+                if(document.getElementById("newDataType").value == 'kv'){
+                    temp = {
+                        "type": "kv",
+                        "keyList": [],
+                        "valueList": []
+                    };
+                } else if(document.getElementById("newDataType").value == 'image'){
+                    temp = {
+                        "type": "image",
+                        "url": ""
+                    };
+                } else if(document.getElementById("newDataType").value == 'text'){
+                    temp = {
+                        "type": "text",
+                        "text": ""
+                    };
+                }
                 $scope.opedata.push(temp);
+            };
+            $scope.upData = function (index) {
+                var temp = $scope.opedata[index];
+                $scope.opedata.splice(index, 1);
+                $scope.opedata.splice(index-1, 0, temp);
+            };
+            $scope.downData = function (index) {
+                var temp = $scope.opedata[index];
+                $scope.opedata.splice(index, 1);
+                $scope.opedata.splice(index+1, 0, temp);
             };
             $scope.deleteData = function (index) {
                 $scope.opedata.splice(index, 1);
@@ -179,24 +417,138 @@
                 return new Array(n);
             };
             $scope.pushData = function () {
-                var newdata = [];
+                $scope.pushdata = [];
                 for(var i=0; i<$scope.opedata.length; i++){
-                    var onedata = {};
-                    for(var j=0; j<$scope.opedata[i].keyList.length; j++){
-                        onedata[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
+                    var onedata = {"type": "", "data": {}};
+                    if($scope.opedata[i].type=='kv'){
+                        onedata.type = 'kv';
+                        for(var j=0; j<$scope.opedata[i].keyList.length; j++){
+                            onedata.data[$scope.opedata[i].keyList[j]] = $scope.opedata[i].valueList[j];
+                        }
+                    } else if($scope.opedata[i].type=='image'){
+                        onedata.type = 'image';
+                        onedata.data.url = $scope.opedata[i].url;
+                    } else if($scope.opedata[i].type=='text'){
+                        onedata.type = 'text';
+                        onedata.data.text = $scope.opedata[i].text;
                     }
-                    newdata.push(onedata);
+                    $scope.pushdata.push(onedata);
                 }
-//                $scope.test = newdata;
                 var temp = {};
                 temp['datasetId'] = $scope.datasetId;
-                temp['data'] = newdata;
+                temp['data'] = $scope.pushdata;
                 $.post('php/pushData.php', {
                     jsonData: JSON.stringify(temp)
                 }, function (res) {
                     alert("保存成功");
                     location.reload();
                 });
+            };
+            $scope.addOperator = function () {
+                if($scope.newOperator==''){
+                    alert("用户名不能为空");
+                } else if($scope.newOperator==$scope.info_username){
+                    alert("不可重复添加自己");
+                } else if($scope.datasetInfo.operators.includes($scope.newOperator)){
+                    alert("不可重复添加用户");
+                } else {
+                    $http.get('php/isUsernameExist.php', {
+                        params: {
+                            'username': $scope.newOperator
+                        }
+                    }).then(function (res) {
+                        if(res.data.data == 'false'){
+                            alert("用户名不存在");
+                        } else {
+                            $http.get('php/addOperator.php', {
+                                params: {
+                                    'datasetId': $scope.datasetId,
+                                    'operator': $scope.newOperator
+                                }
+                            }).then(function (res) {
+                                $scope.datasetInfo.operators.push($scope.newOperator);
+                                $scope.newOperator = '';
+                                alert("添加成功");
+                            })
+                        }
+                    })
+                }
+            };
+            $scope.addSharer = function () {
+                if($scope.newSharer==''){
+                    alert("用户名不能为空");
+                } else if($scope.newSharer==$scope.info_username){
+                    alert("不可重复添加自己");
+                } else if($scope.datasetInfo.sharers.includes($scope.newSharer)){
+                    alert("不可重复添加用户");
+                } else {
+                    $http.get('php/isUsernameExist.php', {
+                        params: {
+                            'username': $scope.newSharer
+                        }
+                    }).then(function (res) {
+                        if(res.data.data == 'false'){
+                            alert("用户名不存在");
+                        } else {
+                            $http.get('php/addSharer.php', {
+                                params: {
+                                    'datasetId': $scope.datasetId,
+                                    'sharer': $scope.newSharer
+                                }
+                            }).then(function (res) {
+                                if(res.data.success=='1'){
+                                    alert("此用户已是可编辑用户");
+                                } else {
+                                    $scope.datasetInfo.sharers.push($scope.newSharer);
+                                    $scope.newSharer = '';
+                                    alert("添加成功");
+                                }
+                            })
+                        }
+                    })
+                }
+            };
+        })
+        .controller('modifyPassword', function ($scope, $http) {
+            $scope.opassword = '';
+            $scope.npassword1 = '';
+            $scope.npassword2 = '';
+            $scope.modify = function () {
+                if($scope.opassword==''){
+                    alert("旧密码不能为空");
+                    return;
+                }
+                if($scope.npassword1==''){
+                    alert("新密码不能为空");
+                    return;
+                }
+                if($scope.npassword2==''){
+                    alert("新密码不能为空");
+                    return;
+                }
+                if($scope.npassword1!=$scope.npassword2){
+                    alert("两个新密码不相同");
+                    return;
+                }
+                if($scope.npassword1==$scope.opassword){
+                    alert("新旧密码不能相同");
+                    return;
+                }
+                $http.get('php/modifyPassword.php', {
+                    params: {
+                        'username': $scope.info_username,
+                        'oldPassword': md5($scope.opassword),
+                        'newPassword': md5($scope.npassword1)
+                    }
+                }).then(function (res) {
+                    if(res.data.success == '1'){
+                        alert("旧密码不正确");
+                    } else {
+                        alert("修改密码成功，请重新登录");
+                        delCookie("qd_username");
+                        window.location.href="login.html";
+                    }
+                })
             };
         });
 
@@ -227,5 +579,27 @@
         }
 
         return uuid.join('');
+    }
+
+    function getCookie(name) {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+
+    function delCookie(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+
+    function setCookie(name,value,time) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() + time*1);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
     }
 </script>
